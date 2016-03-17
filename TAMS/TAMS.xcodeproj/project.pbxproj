@@ -21,6 +21,16 @@
 		2EFE3EC31C9A3BA9009CBF6D /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */; };
 		2EFE3EC61C9A3C67009CBF6D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC41C9A3C67009CBF6D /* play.png */; };
 		2EFE3EC71C9A3C67009CBF6D /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC51C9A3C67009CBF6D /* play@2x.png */; };
+		2EFE3ECA1C9A4443009CBF6D /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC81C9A4443009CBF6D /* pause@2x.png */; };
+		2EFE3ECB1C9A4443009CBF6D /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC91C9A4443009CBF6D /* pause.png */; };
+		2EFE3ECE1C9A44B5009CBF6D /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ECC1C9A44B5009CBF6D /* stop.png */; };
+		2EFE3ECF1C9A44B5009CBF6D /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ECD1C9A44B5009CBF6D /* stop@2x.png */; };
+		2EFE3ED21C9A48DF009CBF6D /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED01C9A48DF009CBF6D /* record.png */; };
+		2EFE3ED31C9A48DF009CBF6D /* record@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED11C9A48DF009CBF6D /* record@2x.png */; };
+		2EFE3ED61C9A4911009CBF6D /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED41C9A4911009CBF6D /* camera.png */; };
+		2EFE3ED71C9A4911009CBF6D /* camera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED51C9A4911009CBF6D /* camera@2x.png */; };
+		2EFE3EDA1C9A496E009CBF6D /* list.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED81C9A496D009CBF6D /* list.png */; };
+		2EFE3EDB1C9A496E009CBF6D /* list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3ED91C9A496E009CBF6D /* list@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +62,16 @@
 		2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
 		2EFE3EC41C9A3C67009CBF6D /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		2EFE3EC51C9A3C67009CBF6D /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+		2EFE3EC81C9A4443009CBF6D /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause@2x.png"; sourceTree = "<group>"; };
+		2EFE3EC91C9A4443009CBF6D /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
+		2EFE3ECC1C9A44B5009CBF6D /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
+		2EFE3ECD1C9A44B5009CBF6D /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop@2x.png"; sourceTree = "<group>"; };
+		2EFE3ED01C9A48DF009CBF6D /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record.png; sourceTree = "<group>"; };
+		2EFE3ED11C9A48DF009CBF6D /* record@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "record@2x.png"; sourceTree = "<group>"; };
+		2EFE3ED41C9A4911009CBF6D /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		2EFE3ED51C9A4911009CBF6D /* camera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera@2x.png"; sourceTree = "<group>"; };
+		2EFE3ED81C9A496D009CBF6D /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
+		2EFE3ED91C9A496E009CBF6D /* list@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,12 +139,22 @@
 		2EFE3EBF1C9A2DD0009CBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
-				2EFE3EC41C9A3C67009CBF6D /* play.png */,
-				2EFE3EC51C9A3C67009CBF6D /* play@2x.png */,
-				2EFE3EC01C9A3BA9009CBF6D /* delete.png */,
-				2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */,
+				2EFE3ED41C9A4911009CBF6D /* camera.png */,
+				2EFE3ED51C9A4911009CBF6D /* camera@2x.png */,
 				2EFE3EB71C9A011D009CBF6D /* compass-25.png */,
 				2EFE3EB91C9A011D009CBF6D /* compass-25@2x.png */,
+				2EFE3EC01C9A3BA9009CBF6D /* delete.png */,
+				2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */,
+				2EFE3ED81C9A496D009CBF6D /* list.png */,
+				2EFE3ED91C9A496E009CBF6D /* list@2x.png */,
+				2EFE3EC91C9A4443009CBF6D /* pause.png */,
+				2EFE3EC81C9A4443009CBF6D /* pause@2x.png */,
+				2EFE3EC41C9A3C67009CBF6D /* play.png */,
+				2EFE3EC51C9A3C67009CBF6D /* play@2x.png */,
+				2EFE3ED01C9A48DF009CBF6D /* record.png */,
+				2EFE3ED11C9A48DF009CBF6D /* record@2x.png */,
+				2EFE3ECC1C9A44B5009CBF6D /* stop.png */,
+				2EFE3ECD1C9A44B5009CBF6D /* stop@2x.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -212,11 +242,21 @@
 			files = (
 				2EFE3EC21C9A3BA9009CBF6D /* delete.png in Resources */,
 				2EFE3EC61C9A3C67009CBF6D /* play.png in Resources */,
+				2EFE3ED21C9A48DF009CBF6D /* record.png in Resources */,
 				2EFE3EC71C9A3C67009CBF6D /* play@2x.png in Resources */,
 				2EFE3E9E1C99FD2D009CBF6D /* LaunchScreen.storyboard in Resources */,
+				2EFE3ECB1C9A4443009CBF6D /* pause.png in Resources */,
+				2EFE3ED61C9A4911009CBF6D /* camera.png in Resources */,
+				2EFE3ECE1C9A44B5009CBF6D /* stop.png in Resources */,
+				2EFE3ED71C9A4911009CBF6D /* camera@2x.png in Resources */,
 				2EFE3E9B1C99FD2D009CBF6D /* Assets.xcassets in Resources */,
 				2EFE3E961C99FD2D009CBF6D /* Main.storyboard in Resources */,
+				2EFE3EDA1C9A496E009CBF6D /* list.png in Resources */,
 				2EFE3EC31C9A3BA9009CBF6D /* delete@2x.png in Resources */,
+				2EFE3ED31C9A48DF009CBF6D /* record@2x.png in Resources */,
+				2EFE3ECF1C9A44B5009CBF6D /* stop@2x.png in Resources */,
+				2EFE3ECA1C9A4443009CBF6D /* pause@2x.png in Resources */,
+				2EFE3EDB1C9A496E009CBF6D /* list@2x.png in Resources */,
 				2EFE3EBA1C9A011D009CBF6D /* compass-25.png in Resources */,
 				2EFE3EBC1C9A011D009CBF6D /* compass-25@2x.png in Resources */,
 			);
