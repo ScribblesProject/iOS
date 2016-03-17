@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2EFE3E911C99FD2D009CBF6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */; };
+		2EFE3E931C99FD2D009CBF6D /* InitialTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */; };
+		2EFE3E961C99FD2D009CBF6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3E941C99FD2D009CBF6D /* Main.storyboard */; };
+		2EFE3E991C99FD2D009CBF6D /* TAMS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3E971C99FD2D009CBF6D /* TAMS.xcdatamodeld */; };
+		2EFE3E9B1C99FD2D009CBF6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3E9A1C99FD2D009CBF6D /* Assets.xcassets */; };
+		2EFE3E9E1C99FD2D009CBF6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3E9C1C99FD2D009CBF6D /* LaunchScreen.storyboard */; };
+		2EFE3EA91C99FD2E009CBF6D /* TAMSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3EA81C99FD2E009CBF6D /* TAMSTests.swift */; };
+		2EFE3EBA1C9A011D009CBF6D /* compass-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EB71C9A011D009CBF6D /* compass-25.png */; };
+		2EFE3EBC1C9A011D009CBF6D /* compass-25@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EB91C9A011D009CBF6D /* compass-25@2x.png */; };
+		2EFE3EBE1C9A2CFD009CBF6D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFE3EBD1C9A2CFD009CBF6D /* MapKit.framework */; };
+		2EFE3EC21C9A3BA9009CBF6D /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC01C9A3BA9009CBF6D /* delete.png */; };
+		2EFE3EC31C9A3BA9009CBF6D /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */; };
+		2EFE3EC61C9A3C67009CBF6D /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC41C9A3C67009CBF6D /* play.png */; };
+		2EFE3EC71C9A3C67009CBF6D /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3EC51C9A3C67009CBF6D /* play@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2EFE3EA51C99FD2E009CBF6D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2EFE3E851C99FD2D009CBF6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2EFE3E8C1C99FD2D009CBF6D;
+			remoteInfo = TAMS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2EFE3E8D1C99FD2D009CBF6D /* TAMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TAMS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialTabBarController.swift; sourceTree = "<group>"; };
+		2EFE3E951C99FD2D009CBF6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2EFE3E981C99FD2D009CBF6D /* TAMS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TAMS.xcdatamodel; sourceTree = "<group>"; };
+		2EFE3E9A1C99FD2D009CBF6D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2EFE3E9D1C99FD2D009CBF6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2EFE3E9F1C99FD2D009CBF6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2EFE3EA41C99FD2E009CBF6D /* TAMSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TAMSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EFE3EA81C99FD2E009CBF6D /* TAMSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TAMSTests.swift; sourceTree = "<group>"; };
+		2EFE3EAA1C99FD2E009CBF6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2EFE3EB71C9A011D009CBF6D /* compass-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass-25.png"; sourceTree = "<group>"; };
+		2EFE3EB91C9A011D009CBF6D /* compass-25@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compass-25@2x.png"; sourceTree = "<group>"; };
+		2EFE3EBD1C9A2CFD009CBF6D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		2EFE3EC01C9A3BA9009CBF6D /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
+		2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
+		2EFE3EC41C9A3C67009CBF6D /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
+		2EFE3EC51C9A3C67009CBF6D /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2EFE3E8A1C99FD2D009CBF6D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EFE3EBE1C9A2CFD009CBF6D /* MapKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EFE3EA11C99FD2E009CBF6D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2EFE3E841C99FD2D009CBF6D = {
+			isa = PBXGroup;
+			children = (
+				2EFE3EBD1C9A2CFD009CBF6D /* MapKit.framework */,
+				2EFE3E8F1C99FD2D009CBF6D /* TAMS */,
+				2EFE3EA71C99FD2E009CBF6D /* TAMSTests */,
+				2EFE3E8E1C99FD2D009CBF6D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2EFE3E8E1C99FD2D009CBF6D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3E8D1C99FD2D009CBF6D /* TAMS.app */,
+				2EFE3EA41C99FD2E009CBF6D /* TAMSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2EFE3E8F1C99FD2D009CBF6D /* TAMS */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3EBF1C9A2DD0009CBF6D /* images */,
+				2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */,
+				2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */,
+				2EFE3E941C99FD2D009CBF6D /* Main.storyboard */,
+				2EFE3E9A1C99FD2D009CBF6D /* Assets.xcassets */,
+				2EFE3E9C1C99FD2D009CBF6D /* LaunchScreen.storyboard */,
+				2EFE3E9F1C99FD2D009CBF6D /* Info.plist */,
+				2EFE3E971C99FD2D009CBF6D /* TAMS.xcdatamodeld */,
+			);
+			path = TAMS;
+			sourceTree = "<group>";
+		};
+		2EFE3EA71C99FD2E009CBF6D /* TAMSTests */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3EA81C99FD2E009CBF6D /* TAMSTests.swift */,
+				2EFE3EAA1C99FD2E009CBF6D /* Info.plist */,
+			);
+			path = TAMSTests;
+			sourceTree = "<group>";
+		};
+		2EFE3EBF1C9A2DD0009CBF6D /* images */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3EC41C9A3C67009CBF6D /* play.png */,
+				2EFE3EC51C9A3C67009CBF6D /* play@2x.png */,
+				2EFE3EC01C9A3BA9009CBF6D /* delete.png */,
+				2EFE3EC11C9A3BA9009CBF6D /* delete@2x.png */,
+				2EFE3EB71C9A011D009CBF6D /* compass-25.png */,
+				2EFE3EB91C9A011D009CBF6D /* compass-25@2x.png */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2EFE3E8C1C99FD2D009CBF6D /* TAMS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EFE3EAD1C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMS" */;
+			buildPhases = (
+				2EFE3E891C99FD2D009CBF6D /* Sources */,
+				2EFE3E8A1C99FD2D009CBF6D /* Frameworks */,
+				2EFE3E8B1C99FD2D009CBF6D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TAMS;
+			productName = TAMS;
+			productReference = 2EFE3E8D1C99FD2D009CBF6D /* TAMS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2EFE3EA31C99FD2E009CBF6D /* TAMSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EFE3EB01C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMSTests" */;
+			buildPhases = (
+				2EFE3EA01C99FD2E009CBF6D /* Sources */,
+				2EFE3EA11C99FD2E009CBF6D /* Frameworks */,
+				2EFE3EA21C99FD2E009CBF6D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2EFE3EA61C99FD2E009CBF6D /* PBXTargetDependency */,
+			);
+			name = TAMSTests;
+			productName = TAMSTests;
+			productReference = 2EFE3EA41C99FD2E009CBF6D /* TAMSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2EFE3E851C99FD2D009CBF6D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Daniel Jackson";
+				TargetAttributes = {
+					2EFE3E8C1C99FD2D009CBF6D = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+					2EFE3EA31C99FD2E009CBF6D = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = 2EFE3E8C1C99FD2D009CBF6D;
+					};
+				};
+			};
+			buildConfigurationList = 2EFE3E881C99FD2D009CBF6D /* Build configuration list for PBXProject "TAMS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2EFE3E841C99FD2D009CBF6D;
+			productRefGroup = 2EFE3E8E1C99FD2D009CBF6D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2EFE3E8C1C99FD2D009CBF6D /* TAMS */,
+				2EFE3EA31C99FD2E009CBF6D /* TAMSTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2EFE3E8B1C99FD2D009CBF6D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EFE3EC21C9A3BA9009CBF6D /* delete.png in Resources */,
+				2EFE3EC61C9A3C67009CBF6D /* play.png in Resources */,
+				2EFE3EC71C9A3C67009CBF6D /* play@2x.png in Resources */,
+				2EFE3E9E1C99FD2D009CBF6D /* LaunchScreen.storyboard in Resources */,
+				2EFE3E9B1C99FD2D009CBF6D /* Assets.xcassets in Resources */,
+				2EFE3E961C99FD2D009CBF6D /* Main.storyboard in Resources */,
+				2EFE3EC31C9A3BA9009CBF6D /* delete@2x.png in Resources */,
+				2EFE3EBA1C9A011D009CBF6D /* compass-25.png in Resources */,
+				2EFE3EBC1C9A011D009CBF6D /* compass-25@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EFE3EA21C99FD2E009CBF6D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2EFE3E891C99FD2D009CBF6D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EFE3E931C99FD2D009CBF6D /* InitialTabBarController.swift in Sources */,
+				2EFE3E911C99FD2D009CBF6D /* AppDelegate.swift in Sources */,
+				2EFE3E991C99FD2D009CBF6D /* TAMS.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2EFE3EA01C99FD2E009CBF6D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2EFE3EA91C99FD2E009CBF6D /* TAMSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2EFE3EA61C99FD2E009CBF6D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2EFE3E8C1C99FD2D009CBF6D /* TAMS */;
+			targetProxy = 2EFE3EA51C99FD2E009CBF6D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2EFE3E941C99FD2D009CBF6D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2EFE3E951C99FD2D009CBF6D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2EFE3E9C1C99FD2D009CBF6D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2EFE3E9D1C99FD2D009CBF6D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2EFE3EAB1C99FD2E009CBF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2EFE3EAC1C99FD2E009CBF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2EFE3EAE1C99FD2E009CBF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = TAMS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2EFE3EAF1C99FD2E009CBF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = TAMS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		2EFE3EB11C99FD2E009CBF6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = TAMSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TAMS.app/TAMS";
+			};
+			name = Debug;
+		};
+		2EFE3EB21C99FD2E009CBF6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = TAMSTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TAMS.app/TAMS";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2EFE3E881C99FD2D009CBF6D /* Build configuration list for PBXProject "TAMS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EFE3EAB1C99FD2E009CBF6D /* Debug */,
+				2EFE3EAC1C99FD2E009CBF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2EFE3EAD1C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EFE3EAE1C99FD2E009CBF6D /* Debug */,
+				2EFE3EAF1C99FD2E009CBF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		2EFE3EB01C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2EFE3EB11C99FD2E009CBF6D /* Debug */,
+				2EFE3EB21C99FD2E009CBF6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2EFE3E971C99FD2D009CBF6D /* TAMS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2EFE3E981C99FD2D009CBF6D /* TAMS.xcdatamodel */,
+			);
+			currentVersion = 2EFE3E981C99FD2D009CBF6D /* TAMS.xcdatamodel */;
+			path = TAMS.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 2EFE3E851C99FD2D009CBF6D /* Project object */;
+}
