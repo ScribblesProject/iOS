@@ -9,8 +9,8 @@
 import UIKit
 import Alamofire
 
-//private let BASE = "http://76.216.160.246"
-private let BASE = "http://localhost:8000"
+private let BASE = "http://76.216.160.246"
+//private let BASE = "http://localhost:8000"
 
 public struct Asset {
     var id:Int
