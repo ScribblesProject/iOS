@@ -11,6 +11,8 @@ import XCTest
 
 class TAMSTests: XCTestCase {
     
+    var expectation:XCTestExpectation?
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,10 +23,31 @@ class TAMSTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testAPI() {
+        
+        expectation = self.expectationWithDescription("asynchronous request")
+        
+        BackendAPI.categoryList { (types) -> Void in
+            print("returned [\(types.count)]: \(types)")
+            self.expectation?.fulfill()
+        }
+        
+        self.waitForExpectationsWithTimeout(10.0, handler:nil)
     }
+
+//    func testAssetCreate() {
+//        
+//        expectation = self.expectationWithDescription("asynchronous request - create")
+//        
+//        let newAsset = Asset(id: -1, name: "Chair", description: "A chair from the RVR building. No one will notice...", type: "Chair", category: "School", imageUrl: "", voiceUrl: "", latitude: 10.56749287634, longitude: -120.8798728976)
+//        
+//        BackendAPI.create(newAsset) { (success) -> Void in
+//            print("returned [success=\(success)]")
+//            self.expectation?.fulfill()
+//        }
+//        
+//        self.waitForExpectationsWithTimeout(10.0, handler:nil)
+//    }
     
     func testPerformanceExample() {
         // This is an example of a performance test case.

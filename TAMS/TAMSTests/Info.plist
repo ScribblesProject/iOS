@@ -20,5 +20,9 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To create new assets with your current location.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>To create new assets with your current location.</string>
 </dict>
 </plist>

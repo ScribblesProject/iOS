@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E5376E92356E8A54DC80294 /* Pods_TAMS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8907DA6B12C9556AC2D538A0 /* Pods_TAMS.framework */; };
+		2E1B94821C9BBFB5006AA4BC /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E1B94801C9BBFB5006AA4BC /* arrow.png */; };
+		2E1B94831C9BBFB5006AA4BC /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E1B94811C9BBFB5006AA4BC /* arrow@2x.png */; };
+		2E1B94851C9BCBE6006AA4BC /* CategTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */; };
+		2E1F44E61C9A824D00815D4B /* AssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1F44E51C9A824D00815D4B /* AssetListViewController.swift */; };
+		2E1F44E81C9A878000815D4B /* BackendAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1F44E71C9A878000815D4B /* BackendAPI.swift */; };
+		2E20A9AE1C9B383B00CE8824 /* CreateAssetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */; };
+		2E5A08FE1C9B806100FEA99E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A08FD1C9B806100FEA99E /* MapViewController.swift */; };
+		2E5A09001C9B969B00FEA99E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E5A08FF1C9B969B00FEA99E /* CoreLocation.framework */; };
+		2EC405691C9A9FD50028D3FD /* LazyImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC405681C9A9FD50028D3FD /* LazyImageView.swift */; };
 		2EFE3E911C99FD2D009CBF6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */; };
 		2EFE3E931C99FD2D009CBF6D /* InitialTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */; };
 		2EFE3E961C99FD2D009CBF6D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EFE3E941C99FD2D009CBF6D /* Main.storyboard */; };
@@ -44,6 +54,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		27E1A531CB27A23C549826CD /* Pods-TAMS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TAMS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TAMS/Pods-TAMS.debug.xcconfig"; sourceTree = "<group>"; };
+		2E1B94801C9BBFB5006AA4BC /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
+		2E1B94811C9BBFB5006AA4BC /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
+		2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategTypeViewController.swift; sourceTree = "<group>"; };
+		2E1F44E51C9A824D00815D4B /* AssetListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetListViewController.swift; sourceTree = "<group>"; };
+		2E1F44E71C9A878000815D4B /* BackendAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendAPI.swift; sourceTree = "<group>"; };
+		2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAssetViewController.swift; sourceTree = "<group>"; };
+		2E5A08FD1C9B806100FEA99E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		2E5A08FF1C9B969B00FEA99E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		2EC405681C9A9FD50028D3FD /* LazyImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyImageView.swift; sourceTree = "<group>"; };
 		2EFE3E8D1C99FD2D009CBF6D /* TAMS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TAMS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialTabBarController.swift; sourceTree = "<group>"; };
@@ -72,6 +92,8 @@
 		2EFE3ED51C9A4911009CBF6D /* camera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera@2x.png"; sourceTree = "<group>"; };
 		2EFE3ED81C9A496D009CBF6D /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
 		2EFE3ED91C9A496E009CBF6D /* list@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list@2x.png"; sourceTree = "<group>"; };
+		8907DA6B12C9556AC2D538A0 /* Pods_TAMS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TAMS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6992BB515E63CC47D0EA84F /* Pods-TAMS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TAMS.release.xcconfig"; path = "Pods/Target Support Files/Pods-TAMS/Pods-TAMS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +101,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E5A09001C9B969B00FEA99E /* CoreLocation.framework in Frameworks */,
 				2EFE3EBE1C9A2CFD009CBF6D /* MapKit.framework in Frameworks */,
+				1E5376E92356E8A54DC80294 /* Pods_TAMS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +117,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C273694C7F080B85A16927B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2E5A08FF1C9B969B00FEA99E /* CoreLocation.framework */,
+				8907DA6B12C9556AC2D538A0 /* Pods_TAMS.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2EC4056A1C9AA30D0028D3FD /* ui elements */ = {
+			isa = PBXGroup;
+			children = (
+				2EC405681C9A9FD50028D3FD /* LazyImageView.swift */,
+			);
+			name = "ui elements";
+			sourceTree = "<group>";
+		};
+		2EC4056B1C9AA3240028D3FD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3E9A1C99FD2D009CBF6D /* Assets.xcassets */,
+				2EFE3E9C1C99FD2D009CBF6D /* LaunchScreen.storyboard */,
+				2EFE3E9F1C99FD2D009CBF6D /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2EC4056C1C9AA35B0028D3FD /* database */ = {
+			isa = PBXGroup;
+			children = (
+				2EFE3E971C99FD2D009CBF6D /* TAMS.xcdatamodeld */,
+			);
+			name = database;
+			sourceTree = "<group>";
+		};
 		2EFE3E841C99FD2D009CBF6D = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +159,8 @@
 				2EFE3E8F1C99FD2D009CBF6D /* TAMS */,
 				2EFE3EA71C99FD2E009CBF6D /* TAMSTests */,
 				2EFE3E8E1C99FD2D009CBF6D /* Products */,
+				4324B353DA053147425C290B /* Pods */,
+				1C273694C7F080B85A16927B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -116,13 +177,17 @@
 			isa = PBXGroup;
 			children = (
 				2EFE3EBF1C9A2DD0009CBF6D /* images */,
-				2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */,
-				2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */,
+				2EC4056C1C9AA35B0028D3FD /* database */,
+				2EC4056A1C9AA30D0028D3FD /* ui elements */,
 				2EFE3E941C99FD2D009CBF6D /* Main.storyboard */,
-				2EFE3E9A1C99FD2D009CBF6D /* Assets.xcassets */,
-				2EFE3E9C1C99FD2D009CBF6D /* LaunchScreen.storyboard */,
-				2EFE3E9F1C99FD2D009CBF6D /* Info.plist */,
-				2EFE3E971C99FD2D009CBF6D /* TAMS.xcdatamodeld */,
+				2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */,
+				2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */,
+				2EFE3E901C99FD2D009CBF6D /* AppDelegate.swift */,
+				2E1F44E51C9A824D00815D4B /* AssetListViewController.swift */,
+				2E1F44E71C9A878000815D4B /* BackendAPI.swift */,
+				2EFE3E921C99FD2D009CBF6D /* InitialTabBarController.swift */,
+				2E5A08FD1C9B806100FEA99E /* MapViewController.swift */,
+				2EC4056B1C9AA3240028D3FD /* Supporting Files */,
 			);
 			path = TAMS;
 			sourceTree = "<group>";
@@ -139,6 +204,8 @@
 		2EFE3EBF1C9A2DD0009CBF6D /* images */ = {
 			isa = PBXGroup;
 			children = (
+				2E1B94801C9BBFB5006AA4BC /* arrow.png */,
+				2E1B94811C9BBFB5006AA4BC /* arrow@2x.png */,
 				2EFE3ED41C9A4911009CBF6D /* camera.png */,
 				2EFE3ED51C9A4911009CBF6D /* camera@2x.png */,
 				2EFE3EB71C9A011D009CBF6D /* compass-25.png */,
@@ -159,6 +226,15 @@
 			name = images;
 			sourceTree = "<group>";
 		};
+		4324B353DA053147425C290B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				27E1A531CB27A23C549826CD /* Pods-TAMS.debug.xcconfig */,
+				A6992BB515E63CC47D0EA84F /* Pods-TAMS.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -166,9 +242,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2EFE3EAD1C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMS" */;
 			buildPhases = (
+				2EBE325D5398D0F365AE820E /* Check Pods Manifest.lock */,
 				2EFE3E891C99FD2D009CBF6D /* Sources */,
 				2EFE3E8A1C99FD2D009CBF6D /* Frameworks */,
 				2EFE3E8B1C99FD2D009CBF6D /* Resources */,
+				5964A0A23E889494CB820FC6 /* Embed Pods Frameworks */,
+				E1054F9E82EB2F1754162115 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -243,6 +322,7 @@
 				2EFE3EC21C9A3BA9009CBF6D /* delete.png in Resources */,
 				2EFE3EC61C9A3C67009CBF6D /* play.png in Resources */,
 				2EFE3ED21C9A48DF009CBF6D /* record.png in Resources */,
+				2E1B94821C9BBFB5006AA4BC /* arrow.png in Resources */,
 				2EFE3EC71C9A3C67009CBF6D /* play@2x.png in Resources */,
 				2EFE3E9E1C99FD2D009CBF6D /* LaunchScreen.storyboard in Resources */,
 				2EFE3ECB1C9A4443009CBF6D /* pause.png in Resources */,
@@ -256,6 +336,7 @@
 				2EFE3ED31C9A48DF009CBF6D /* record@2x.png in Resources */,
 				2EFE3ECF1C9A44B5009CBF6D /* stop@2x.png in Resources */,
 				2EFE3ECA1C9A4443009CBF6D /* pause@2x.png in Resources */,
+				2E1B94831C9BBFB5006AA4BC /* arrow@2x.png in Resources */,
 				2EFE3EDB1C9A496E009CBF6D /* list@2x.png in Resources */,
 				2EFE3EBA1C9A011D009CBF6D /* compass-25.png in Resources */,
 				2EFE3EBC1C9A011D009CBF6D /* compass-25@2x.png in Resources */,
@@ -271,14 +352,68 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2EBE325D5398D0F365AE820E /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5964A0A23E889494CB820FC6 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TAMS/Pods-TAMS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E1054F9E82EB2F1754162115 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-TAMS/Pods-TAMS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2EFE3E891C99FD2D009CBF6D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EC405691C9A9FD50028D3FD /* LazyImageView.swift in Sources */,
+				2E1B94851C9BCBE6006AA4BC /* CategTypeViewController.swift in Sources */,
+				2E1F44E81C9A878000815D4B /* BackendAPI.swift in Sources */,
 				2EFE3E931C99FD2D009CBF6D /* InitialTabBarController.swift in Sources */,
 				2EFE3E911C99FD2D009CBF6D /* AppDelegate.swift in Sources */,
 				2EFE3E991C99FD2D009CBF6D /* TAMS.xcdatamodeld in Sources */,
+				2E1F44E61C9A824D00815D4B /* AssetListViewController.swift in Sources */,
+				2E20A9AE1C9B383B00CE8824 /* CreateAssetViewController.swift in Sources */,
+				2E5A08FE1C9B806100FEA99E /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,9 +538,11 @@
 		};
 		2EFE3EAE1C99FD2E009CBF6D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27E1A531CB27A23C549826CD /* Pods-TAMS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TAMS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -414,9 +551,11 @@
 		};
 		2EFE3EAF1C99FD2E009CBF6D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A6992BB515E63CC47D0EA84F /* Pods-TAMS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = TAMS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.danieljackson.TAMS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -466,6 +605,7 @@
 				2EFE3EAF1C99FD2E009CBF6D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2EFE3EB01C99FD2E009CBF6D /* Build configuration list for PBXNativeTarget "TAMSTests" */ = {
 			isa = XCConfigurationList;
@@ -474,6 +614,7 @@
 				2EFE3EB21C99FD2E009CBF6D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
