@@ -8,8 +8,9 @@
 
 import UIKit
 import SVProgressHUD
+import MapKit
 
-class CreateAssetViewController: UITableViewController, CategTypeViewControllerProtocol {
+class CreateAssetViewController: UITableViewController, CategTypeViewControllerProtocol, MapViewControllerProtocol {
     
     @IBOutlet var addPhotoButton: UIButton!
     @IBOutlet var assetPhoto: UIImageView!
@@ -21,6 +22,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     @IBOutlet var memoPlayButton: UIButton!
     @IBOutlet var memoDeleteButton: UIButton!
     @IBOutlet var assetDescription: UITextView!
+    var keyboardShowing = false
     
     var assetLongitude:Double = 0.0
     var assetLatitude:Double = 0.0
@@ -31,6 +33,23 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         assetCategory.text = ""
         assetCategoryDescription = ""
         assetType.text = ""
+        assetLocation.text = ""
+
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func keboardDidShow(notification:NSNotification) {
+        keyboardShowing = true
+    }
+    
+    func keboardDidHide(notification:NSNotification) {
+        keyboardShowing = false
     }
 
     func formatAsset()->Asset
@@ -74,10 +93,20 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             (destination as! CategTypeViewController).setup(viewType: .Category, delegate: self)
         case "pushSelectType":
             (destination as! CategTypeViewController).setup(viewType: .Type, delegate: self)
+        case "pushSelectLocation":
+            (destination as! MapViewController).setup(.Select, delegate: self)
         default:
             break
         }
     }
+    
+    func didSelectLocations(locations: [CLLocationCoordinate2D]) {
+        assetLatitude = locations[0].latitude
+        assetLongitude = locations[0].longitude
+        assetLocation.text = "\(assetLatitude), \(assetLongitude)"
+    }
+    
+    //MARK: Button Actions
     
     @IBAction func doneButtonPress(sender: AnyObject) {
         
@@ -138,6 +167,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    //MARK: CategTypeViewControllerProtocol callbacks
+    
     func didSelectType(type:Type) {
         assetType.text = type.name
     }
@@ -146,6 +177,16 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         print("didSelectCategory with name: \(category)")
         assetCategory.text = category.name
         assetCategoryDescription = category.description
+    }
+    
+    //MARK: Table View Delegate
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        if keyboardShowing {
+            //Dismiss keyboard on scroll
+            assetName.resignFirstResponder()
+            assetDescription.resignFirstResponder()
+        }
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

@@ -10,19 +10,63 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+public protocol MapViewControllerProtocol {
+    func didSelectLocations(locations:[CLLocationCoordinate2D])
+}
+
+public enum MapViewMode {
+    case Tab //Default
+    case Select
+}
+
+public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     @IBOutlet var mapView: MKMapView!
-    var assets = [Asset]()
+    
     let locationManager = CLLocationManager()
     var currentLocation:CLLocation?;
+    var viewMode:MapViewMode = .Tab
+    var assets = [Asset]()
+    var selectPinLocations:[CLLocationCoordinate2D] = []
+    var delegate:MapViewControllerProtocol?
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
-        // Ask for Authorisation from the User.
-//        self.locationManager.requestAlwaysAuthorization()
+        startUpdatingLocation()
+        setupInitialMapPosition()
         
+        switch viewMode {
+        case .Tab:
+            setupForTab()
+        case .Select:
+            setupForSelect()
+        }
+    }
+    
+    override public func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        switch viewMode {
+        case .Tab:
+            updateForTab()
+        case .Select:
+            break
+//            setupForSelect()
+        }
+    }
+    
+    override public func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    //MARK: Setup
+    
+    public func setup(mode:MapViewMode, delegate del:MapViewControllerProtocol) {
+        viewMode = mode
+        delegate = del
+    }
+    
+    func startUpdatingLocation() {
         // For use in foreground
         self.locationManager.requestWhenInUseAuthorization()
         
@@ -31,20 +75,63 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
+    }
     
+    func setupInitialMapPosition() {
         let location = CLLocationCoordinate2D(latitude: 38.5815719, longitude: -121.49439960000001)
         let region = MKCoordinateRegionMakeWithDistance(location, 20000, 20000)
         self.mapView.setRegion(region, animated: false)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    func setupForTab() {
+        //Remove the "Done" button from toolbar
+        if self.navigationItem.rightBarButtonItems?.count > 1 {
+            self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
+        }
+    }
+    
+    func updateForTab() {
+        //Pull assets and setup pins
         reload()
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    @IBAction func doneButtonPressed(sender: AnyObject) {
+        delegate?.didSelectLocations(selectPinLocations)
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func setupForSelect() {
+        self.navigationItem.leftBarButtonItem = nil
+        self.title = "Select Location"
+        
+        //Add Tap Gesture Recognizer
+        let lpgr = UILongPressGestureRecognizer(target: self, action: "handleSelectPin:")
+        lpgr.minimumPressDuration = 1.0
+        self.mapView.addGestureRecognizer(lpgr)
+    }
+    
+    func handleSelectPin(recognizer:UIGestureRecognizer) {
+        if recognizer.state != .Began {
+            return
+        }
+        
+        print("Dropping Pin")
+        
+        //Remove all pins
+        selectPinLocations = []
+        for pin in self.mapView.annotations {
+            self.mapView.removeAnnotation(pin)
+        }
+        
+        let touchPoint = recognizer.locationInView(self.mapView)
+        let touchMapCoordinate = self.mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+        
+        selectPinLocations += [touchMapCoordinate]
+        
+        let point = MKPointAnnotation()
+        point.coordinate = touchMapCoordinate
+        point.title = "Dropped Pin"
+        self.mapView.addAnnotation(point)
     }
     
     @IBAction func locateUser(sender: AnyObject) {
@@ -53,12 +140,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        //Setup mapview for initial ping
+        if currentLocation == nil {
+            mapView.showsUserLocation = true
+        }
+        
         currentLocation = locations[0]
-//        print("Latitude: \(location.coordinate.latitude). Longitude: \(location.coordinate.longitude).")
-        mapView.showsUserLocation = true
     }
-    
+  public   
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("LOCATION MANAGER ERROR: \(error)")
     }

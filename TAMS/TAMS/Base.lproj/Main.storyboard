@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Asset List-->
@@ -300,6 +301,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="OpA-ly-tyN" kind="show" identifier="pushSelectLocation" id="G3l-sc-ZNH"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="65" id="FLA-Ur-hl4">
                                         <rect key="frame" x="0.0" y="422" width="600" height="65"/>
@@ -520,7 +524,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rHU-tq-jCV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3243" y="18"/>
+            <point key="canvasLocation" x="3245" y="18"/>
         </scene>
         <!--Asset Map-->
         <scene sceneID="7fN-dk-qmN">
@@ -552,11 +556,18 @@
                                 <segue destination="cHU-lj-CJG" kind="show" id="0Ui-Sf-Ox2"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="arrow.png" id="0Ft-nx-SbP">
-                            <connections>
-                                <action selector="locateUser:" destination="OpA-ly-tyN" id="wDY-KR-z3V"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="done" id="Mdi-We-DhZ">
+                                <connections>
+                                    <action selector="doneButtonPressed:" destination="OpA-ly-tyN" id="vZM-2y-LuV"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="arrow.png" id="0Ft-nx-SbP">
+                                <connections>
+                                    <action selector="locateUser:" destination="OpA-ly-tyN" id="wDY-KR-z3V"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="mapView" destination="6Bh-ai-1d2" id="2y9-am-rOy"/>
@@ -671,5 +682,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="dt6-Aw-KDU"/>
+        <segue reference="G3l-sc-ZNH"/>
     </inferredMetricsTieBreakers>
 </document>
