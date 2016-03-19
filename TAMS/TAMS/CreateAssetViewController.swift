@@ -19,29 +19,43 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     var assetCategoryDescription:String = ""
     @IBOutlet var assetType: UILabel!
     @IBOutlet var assetLocation: UILabel!
+    @IBOutlet var memoRecordButton: UIButton!
     @IBOutlet var memoPlayButton: UIButton!
     @IBOutlet var memoDeleteButton: UIButton!
+    @IBOutlet var memoProgressSlider: UISlider!
     @IBOutlet var assetDescription: UITextView!
     var keyboardShowing = false
     
     var assetLongitude:Double = 0.0
     var assetLatitude:Double = 0.0
     
+    //MARK: -
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        assetCategory.text = ""
-        assetCategoryDescription = ""
-        assetType.text = ""
-        assetLocation.text = ""
+        setupView()
 
         NSNotificationCenter.defaultCenter().removeObserver(self)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
     }
     
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    func setupView()
+    {
+        assetCategory.text = ""
+        assetCategoryDescription = ""
+        assetType.text = ""
+        assetLocation.text = ""
+        
+        //Recorder
+        memoPlayButton.hidden = true
+        memoDeleteButton.hidden = true
+        memoProgressSlider.hidden = true
     }
     
     func keboardDidShow(notification:NSNotification) {
@@ -68,23 +82,6 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         )
     }
     
-    func validate()->Bool {
-        let nameCount = assetName.text?.characters.count ?? 0
-        let descCount = assetDescription.text.characters.count
-        let typeCount = assetType.text?.characters.count ?? 0
-        let categCount = assetCategory.text?.characters.count ?? 0
-        let valid = (nameCount > 0 && descCount > 0 && typeCount > 0 && categCount > 0)
-        
-        if !valid {
-            let alert = UIAlertController(title: "Uh Oh!", message: "Required fields: Name, Description, Category, Type", preferredStyle: .Alert)
-            let cancelButton = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
-            alert.addAction(cancelButton)
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
-        
-        return valid
-    }
-    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let destination = segue.destinationViewController
         
@@ -98,12 +95,6 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         default:
             break
         }
-    }
-    
-    func didSelectLocations(locations: [CLLocationCoordinate2D]) {
-        assetLatitude = locations[0].latitude
-        assetLongitude = locations[0].longitude
-        assetLocation.text = "\(assetLatitude), \(assetLongitude)"
     }
     
     //MARK: Button Actions
@@ -146,28 +137,112 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             }
         }
     }
+    
+    func validate()->Bool {
+        let nameCount = assetName.text?.characters.count ?? 0
+        let descCount = assetDescription.text.characters.count
+        let typeCount = assetType.text?.characters.count ?? 0
+        let categCount = assetCategory.text?.characters.count ?? 0
+        let valid = (nameCount > 0 && descCount > 0 && typeCount > 0 && categCount > 0)
+        
+        if !valid {
+            let alert = UIAlertController(title: "Uh Oh!", message: "Required fields: Name, Description, Category, Type", preferredStyle: .Alert)
+            let cancelButton = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
+            alert.addAction(cancelButton)
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        
+        return valid
+    }
+    
     @IBAction func addPhotoButtonPress(sender: AnyObject) {
-        let alert = UIAlertController(title: "Not Implemented", message: "Coming Soon...", preferredStyle: .Alert)
-        let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-        alert.addAction(cancelButton)
-        self.presentViewController(alert, animated: true, completion: nil)
+        PhotoPicker.sharedInstance().requestPhoto(viewController: self) { (image) -> Void in
+            print("Got Image!!")
+            self.assetPhoto.image = image
+            (sender as? UIButton)?.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
+        }
+    }
+    
+    @IBAction func memoRecordButtonPress(sender: AnyObject) {
+        if VoiceMemoRecorder.sharedInstance().recording {
+            VoiceMemoRecorder.sharedInstance().stopRecorder()
+            
+            self.memoRecordButton.hidden = true
+            self.memoRecordButton.setImage(UIImage(named: "record.png"), forState: .Normal)
+            self.memoRecordButton.titleLabel?.text = "Record Voice Memo"
+            self.memoPlayButton.hidden = false
+            self.memoDeleteButton.hidden = false
+            self.memoProgressSlider.hidden = false
+        }
+        else {
+            VoiceMemoRecorder.sharedInstance().recordAudio { (success) -> Void in
+                if success {
+                    //recording...
+                    self.memoRecordButton.setImage(UIImage(named: "stop.png"), forState: .Normal)
+                    self.memoRecordButton.titleLabel?.text = "Stop Recording"
+                }
+                else {
+                    self.presentError("Could not start recording. Check your phones settings to ensure this application has proper permissions.")
+                }
+            }
+        }
     }
     
     @IBAction func memoPlayButtonPress(sender: AnyObject) {
-        let alert = UIAlertController(title: "Not Implemented", message: "Coming Soon...", preferredStyle: .Alert)
-        let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-        alert.addAction(cancelButton)
-        self.presentViewController(alert, animated: true, completion: nil)
+        if VoiceMemoRecorder.sharedInstance().playing()
+        {
+            VoiceMemoRecorder.sharedInstance().pause()
+        }
+        else {
+            self.memoProgressSlider.maximumValue = 1.0
+            VoiceMemoRecorder.sharedInstance().play({ (progress, playing, finished) -> Void in
+                if !playing || finished {
+                    self.memoPlayButton.setImage(UIImage(named: "play.png"), forState: .Normal)
+                }
+                else {
+                    self.memoPlayButton.setImage(UIImage(named: "pause.png"), forState: .Normal)
+                }
+                
+                if finished {
+                    self.memoProgressSlider.value = 1.0
+                }
+                else {
+                    self.memoProgressSlider.value = Float(progress)
+                }
+                
+                print("Progress: \(self.memoProgressSlider.value)")
+            })
+        }
     }
     
     @IBAction func memoDeleteButtonPress(sender: AnyObject) {
-        let alert = UIAlertController(title: "Not Implemented", message: "Coming Soon...", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Are You Sure?", message: "This will erase your current recording. This action is not recoverable.", preferredStyle: .Alert)
         let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        let deleteButton = UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive) { (action) -> Void in
+            VoiceMemoRecorder.sharedInstance().deleteRecording()
+            self.memoProgressSlider.value = 0.0
+            self.memoPlayButton.hidden = true
+            self.memoDeleteButton.hidden = true
+            self.memoProgressSlider.hidden = true
+            self.memoRecordButton.hidden = false
+        }
         alert.addAction(cancelButton)
+        alert.addAction(deleteButton)
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    //MARK: CategTypeViewControllerProtocol callbacks
+    //MARK: Field Callbacks
+    
+    func didSelectLocations(locations: [CLLocationCoordinate2D]) {
+        
+        if locations.count == 0 {
+            return
+        }
+        
+        assetLatitude = locations[0].latitude
+        assetLongitude = locations[0].longitude
+        assetLocation.text = String(format: "%.5f, %.5f", arguments: [assetLatitude,assetLongitude])
+    }
     
     func didSelectType(type:Type) {
         assetType.text = type.name
@@ -191,5 +266,15 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    //MARK: - 
+    
+    func presentError(message:String) {
+        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
     }
 }

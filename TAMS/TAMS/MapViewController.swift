@@ -33,6 +33,8 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
     override public func viewDidLoad() {
         super.viewDidLoad()
         
+        mapView.delegate = self
+        
         startUpdatingLocation()
         setupInitialMapPosition()
         
@@ -177,6 +179,19 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
             }
         }
         return hasChanges
+    }
+    
+    public func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
+        for annView in views
+        {
+            let endFrame = annView.frame;
+            annView.frame = CGRectOffset(endFrame, 0, -500);
+            UIView.animateWithDuration(0.5, animations: { () -> Void in
+                annView.frame = endFrame
+            })
+//            [UIView animateWithDuration:0.5
+//                animations:^{ annView.frame = endFrame; }];
+        }
     }
     
     func reload() {
