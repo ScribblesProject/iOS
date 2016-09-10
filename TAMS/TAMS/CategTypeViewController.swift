@@ -94,6 +94,9 @@ public class CategTypeViewController: UITableViewController {
             }
         }
         
+        let cancelButton = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alert.addAction(cancelButton)
+        
         //Add Ok Button with handler.
         let okButton = UIAlertAction(title: "Ok", style: .Default) { (okAction) -> Void in
             let nameField = alert.textFields!.first!

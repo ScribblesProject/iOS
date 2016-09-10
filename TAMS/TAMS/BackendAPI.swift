@@ -9,7 +9,7 @@
 import UIKit
 import Alamofire
 
-private let BASE = "http://76.216.160.246"
+private let BASE = "https://tams-142602.appspot.com"
 //private let BASE = "http://localhost:8000"
 
 public struct Asset {
@@ -167,7 +167,7 @@ class BackendAPI: NSObject {
         }
     }
     
-    class func create(newAsset:Asset, completion:((Bool)->Void))
+    class func create(newAsset:Asset, completion:((success:Bool, id:Int)->Void))
     {
         let endpoint = "/api/asset/create/"
         print(BASE+endpoint)
@@ -182,8 +182,9 @@ class BackendAPI: NSObject {
                 case .Success:
                     if let JSON = response.result.value {
                         let success = JSON["success"] as? Bool ?? false
-                        if success {
-                            completion(true)
+                        let assetId = JSON["id"] as? Int ?? -1
+                        if success && assetId != -1 {
+                            completion(success: true, id: assetId)
                             return
                         }
                     }
@@ -192,7 +193,7 @@ class BackendAPI: NSObject {
                 }
                 
                 printResponse(response)
-                completion(false)
+                completion(success: false, id: -1)
                 return
         }
     }
@@ -258,6 +259,89 @@ class BackendAPI: NSObject {
                     completion([])
                 }
         }
+    }
+    
+//MARK: Media Methods
+    
+    class func uploadImage(image:UIImage, assetId:Int, progress:((percent:Double)->Void), completion:((Bool)->Void))
+    {
+        let endpoint = "/api/asset/media/image-upload/\(assetId)/"
+        let imageData = UIImageJPEGRepresentation(image, 0.5)!
+        
+        print(BASE+endpoint)
+        
+        Alamofire.upload(.POST, BASE+endpoint, multipartFormData: {
+            multipartFormData in
+            
+            multipartFormData.appendBodyPart(data: imageData, name: "image", fileName: "file.jpg", mimeType: "image/jpeg")
+            
+            }, encodingCompletion: {
+                encodingResult in
+                
+                switch encodingResult {
+                case .Success(let upload, _, _):
+                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpected) -> Void in
+                        if imageData.length > 0 {
+                            progress(percent: Double(totalBytesWritten)/Double(imageData.length))
+                        }
+                    })
+                    upload.responseJSON { response in
+                        if let JSON = response.result.value {
+                            let success = JSON["success"] as? Bool ?? false
+                            if success {
+                                completion(true)
+                                return
+                            }
+                        }
+                    }
+                case .Failure(let encodingError):
+                    print(encodingError)
+                }
+                
+                completion(false)
+                return
+        })
+    }
+    
+    class func uploadMemo(memoFileURL:NSURL, assetId:Int, progress:((percent:Double)->Void), completion:((Bool)->Void))
+    {
+        let endpoint = "/api/asset/media/voice-upload/\(assetId)/"
+        
+        print(BASE+endpoint)
+        
+        Alamofire.upload(.POST, BASE+endpoint, multipartFormData: {
+            multipartFormData in
+            
+            multipartFormData.appendBodyPart(fileURL: memoFileURL, name: "audio", fileName: "file.aac", mimeType: "image/aac")
+            
+            }, encodingCompletion: {
+                encodingResult in
+                
+                switch encodingResult {
+                case .Success(let upload, _, _):
+                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpected) -> Void in
+                        if totalBytesExpected > 0 {
+                            progress(percent: Double(totalBytesWritten)/Double(totalBytesExpected))
+                        }
+                    })
+                    upload.responseJSON { response in
+                        if let JSON = response.result.value {
+                            print(JSON)
+                            let success = JSON["success"] as? Bool ?? false
+                            if success {
+                                completion(true)
+                                return
+                            }
+                        }
+                    }
+                case .Failure(let encodingError):
+                    print(encodingError)
+                }
+                
+                print("FAILED!!! \(encodingResult)")
+                completion(false)
+                return
+        })
     }
 }
 

@@ -28,6 +28,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     var assetLongitude:Double = 0.0
     var assetLatitude:Double = 0.0
+    var assetImage:UIImage?
+    var assetMemoURL:NSURL?
     
     //MARK: -
     
@@ -107,34 +109,84 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         
         let newAsset = formatAsset()
         
-        SVProgressHUD.showWithStatus("Creating Asset", maskType: .Black)
-        BackendAPI.create(newAsset) { (success) -> Void in
+        createAsset(newAsset) { (success, imageUploaded, memoUploaded) -> Void in
             if success {
-                let queue = NSOperationQueue()
-                queue.maxConcurrentOperationCount = 1
-                queue.addOperationWithBlock({ () -> Void in
-                    sleep(2)
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        SVProgressHUD.showWithStatus("Uploading Asset Image", maskType: .Black)
-                    })
-                })
-                queue.addOperationWithBlock({ () -> Void in
-                    sleep(2)
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        SVProgressHUD.showWithStatus("Uploading Asset Voice Memo", maskType: .Black)
-                    })
-                })
-                queue.addOperationWithBlock({ () -> Void in
-                    sleep(2)
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        SVProgressHUD.showSuccessWithStatus("Asset Created Successfully", maskType: .Black)
-                        self.navigationController?.popViewControllerAnimated(true)
-                    })
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    SVProgressHUD.showSuccessWithStatus("Successfully Created Asset!", maskType: .Black)
+                    NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: "popView", userInfo: nil, repeats: false)
                 })
             }
             else {
-                SVProgressHUD.showErrorWithStatus("Error Creating Asset")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    SVProgressHUD.showErrorWithStatus("Failed To Created Asset!", maskType: .Black)
+                    sleep(2)
+                    self.navigationController?.popViewControllerAnimated(true)
+                    NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: "popView", userInfo: nil, repeats: false)
+                })
             }
+        }
+    }
+    
+    func popView()
+    {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    typealias createAssetCompletionHandler = ((success:Bool, imageUploaded:Bool, memoUploaded:Bool)->Void)
+    
+    func createAsset(asset:Asset, completion:createAssetCompletionHandler) {
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            SVProgressHUD.showWithStatus("Creating Asset", maskType: .Black)
+        })
+        BackendAPI.create(asset) { (success, assetId) -> Void in
+            if success {
+                self.uploadMedia(assetId, completion: completion)
+            }
+            else {
+                completion(success: false, imageUploaded: false, memoUploaded: false)
+            }
+        }
+    }
+    
+    func uploadMedia(assetId:Int, completion:createAssetCompletionHandler)
+    {
+        if let img = self.assetImage {
+            //Upload Image
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                SVProgressHUD.showWithStatus("Uploading Asset Image", maskType: .Black)
+            })
+            BackendAPI.uploadImage(img, assetId: assetId, progress: { (percent) -> Void in
+            }, completion: { (success) -> Void in
+                if success {
+                    self.uploadMediaMemo(assetId, imageUploaded: true, completion: completion)
+                }
+                else {
+                    self.uploadMediaMemo(assetId, imageUploaded: false, completion: completion)
+                }
+            })
+        }
+        else {
+            self.uploadMediaMemo(assetId, imageUploaded: false, completion: completion)
+        }
+    }
+    
+    func uploadMediaMemo(assetId:Int, imageUploaded:Bool, completion:createAssetCompletionHandler) {
+        if let fileUrl = assetMemoURL {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                SVProgressHUD.showWithStatus("Uploading Asset Memo", maskType: .Black)
+            })
+            BackendAPI.uploadMemo(fileUrl, assetId: assetId, progress: { (percent) -> Void in
+            }, completion: { (success) -> Void in
+                if success {
+                    completion(success: true, imageUploaded: imageUploaded, memoUploaded: true)
+                }
+                else {
+                    completion(success: true, imageUploaded: imageUploaded, memoUploaded: false)
+                }
+            })
+        }
+        else {
+            completion(success: true, imageUploaded: imageUploaded, memoUploaded: false)
         }
     }
     
@@ -158,6 +210,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     @IBAction func addPhotoButtonPress(sender: AnyObject) {
         PhotoPicker.sharedInstance().requestPhoto(viewController: self) { (image) -> Void in
             print("Got Image!!")
+            self.assetImage = image
             self.assetPhoto.image = image
             (sender as? UIButton)?.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
         }
@@ -165,7 +218,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     @IBAction func memoRecordButtonPress(sender: AnyObject) {
         if VoiceMemoRecorder.sharedInstance().recording {
-            VoiceMemoRecorder.sharedInstance().stopRecorder()
+            let fileURL = VoiceMemoRecorder.sharedInstance().stopRecorder()
+            assetMemoURL = fileURL
             
             self.memoRecordButton.hidden = true
             self.memoRecordButton.setImage(UIImage(named: "record.png"), forState: .Normal)
