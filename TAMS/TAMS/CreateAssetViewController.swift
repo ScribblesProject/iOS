@@ -26,8 +26,9 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     @IBOutlet var assetDescription: UITextView!
     var keyboardShowing = false
     
-    var assetLongitude:Double = 0.0
-    var assetLatitude:Double = 0.0
+//    var assetLongitude:Double = 0.0
+//    var assetLatitude:Double = 0.0
+    var locations:[Int:Asset.LocationType] = [:]
     var assetImage:UIImage?
     var assetMemoURL:URL?
     
@@ -79,7 +80,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             category_description: assetCategoryDescription,
             imageUrl: "",
             voiceUrl: "",
-            locations: [Int:Any]() as! [Int : Asset.LocationType]
+            locations: self.locations
         )
     }
     
@@ -297,9 +298,13 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             return
         }
         
-        assetLatitude = locations[0].latitude
-        assetLongitude = locations[0].longitude
-        assetLocation.text = String(format: "%.5f, %.5f", arguments: [assetLatitude,assetLongitude])
+        var index = 0
+        for loc in locations {
+            index += 1
+            self.locations[index] = Asset.LocationType(latitude: loc.latitude, longitude: loc.longitude)
+        }
+        
+        assetLocation.text = "\(locations.count) selected"
     }
     
     func didSelectType(_ type:Type) {

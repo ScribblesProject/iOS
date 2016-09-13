@@ -9,8 +9,8 @@
 import UIKit
 import Alamofire
 
-//private let BASE = "https://tams-142602.appspot.com"
-private let BASE = "http://localhost:9000"
+private let BASE = "https://tams-142602.appspot.com"
+//private let BASE = "http://localhost:9000"
 
 public struct Asset {
     var id:NSNumber
@@ -198,6 +198,8 @@ class BackendAPI: NSObject {
         
         let parameters = newAsset.formatDictionary()
         let url = BASE+endpoint
+        
+        print(parameters)
 
         Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil)
         .validate()
