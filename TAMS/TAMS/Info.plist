@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To attach to assets for easier identification of the object/place</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To create new assets with your current location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -53,6 +55,14 @@
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>

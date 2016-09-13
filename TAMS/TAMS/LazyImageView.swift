@@ -11,11 +11,10 @@ import Alamofire
 
 class LazyImageView: UIImageView {
     
-    func loadUrl(url:String) {
-        Alamofire.request(.GET, url)
-            .validate()
-            .response { request, response, data, error in
-                if let _data = data {
+    func loadUrl(_ url:String) {
+        
+        Alamofire.request(url, method:.get).validate().response { response in
+                if let _data = response.data {
                     self.image = UIImage(data: _data)
                 }
         }

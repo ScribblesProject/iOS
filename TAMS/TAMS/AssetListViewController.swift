@@ -15,12 +15,12 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
     @IBOutlet var tableView:UITableView!
     @IBOutlet var editButton: UIBarButtonItem!
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reload()
     }
     
-    @IBAction func editButtonPressed(sender: AnyObject) {
+    @IBAction func editButtonPressed(_ sender: AnyObject) {
         if editButton.title == "Edit" {
             self.tableView.setEditing(true, animated: true)
             self.editButton.title = "Done"
@@ -38,52 +38,52 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return assets.count
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        let actionSheet = UIAlertController(title: "Are You Sure?", message: "This will delete your asset", preferredStyle: .ActionSheet)
-        let cancelActionButton: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
+        let actionSheet = UIAlertController(title: "Are You Sure?", message: "This will delete your asset", preferredStyle: .actionSheet)
+        let cancelActionButton: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
             print("Action Canceled")
         }
         actionSheet.addAction(cancelActionButton)
         
-        let deleteActionButton: UIAlertAction = UIAlertAction(title: "Delete Asset", style: .Destructive) { action -> Void in
+        let deleteActionButton: UIAlertAction = UIAlertAction(title: "Delete Asset", style: .destructive) { action -> Void in
             print("Deleting...")
-            let currentAsset = self.assets[indexPath.row]
-            SVProgressHUD.showWithStatus("Deleting Asset", maskType: .Black)
+            let currentAsset = self.assets[(indexPath as NSIndexPath).row]
+            SVProgressHUD.show(withStatus: "Deleting Asset", maskType: .black)
             BackendAPI.delete(currentAsset, completion: { (success) -> Void in
                 if success {
-                    SVProgressHUD.showSuccessWithStatus("Succesfully Deleted Asset", maskType: .Black)
+                    SVProgressHUD.showSuccess(withStatus: "Succesfully Deleted Asset", maskType: .black)
                 }
                 else {
-                    SVProgressHUD.showErrorWithStatus("Failed To Delete Asset", maskType: .Black)
+                    SVProgressHUD.showError(withStatus: "Failed To Delete Asset", maskType: .black)
                 }
-                self.assets.removeAtIndex(indexPath.row)
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-                NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "reload", userInfo: nil, repeats: false)
+                self.assets.remove(at: (indexPath as NSIndexPath).row)
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+                Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: "reload", userInfo: nil, repeats: false)
             })
         }
         actionSheet.addAction(deleteActionButton)
-        self.presentViewController(actionSheet, animated: true, completion: nil)
+        self.present(actionSheet, animated: true, completion: nil)
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let currentAsset = assets[indexPath.row]
+        let currentAsset = assets[(indexPath as NSIndexPath).row]
         
         var cellIdentifier = "assetBasicCell"
         if currentAsset.imageUrl.characters.count > 0 {
             cellIdentifier = "assetImageCell"
         }
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         
         // Tags are defined in storyboard
         let primaryLabel = cell?.viewWithTag(10) as? UILabel
@@ -94,13 +94,13 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
         secondaryLabel?.text = currentAsset.description
 
         imageView?.loadUrl(currentAsset.imageUrl)
-        imageView?.layer.borderColor = UIColor.blackColor().CGColor
+        imageView?.layer.borderColor = UIColor.black.cgColor
         imageView?.layer.borderWidth = 1.0
         
         return cell!
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

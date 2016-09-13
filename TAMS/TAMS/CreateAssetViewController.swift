@@ -29,12 +29,12 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     var assetLongitude:Double = 0.0
     var assetLatitude:Double = 0.0
     var assetImage:UIImage?
-    var assetMemoURL:NSURL?
+    var assetMemoURL:URL?
     
     //MARK: -
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -42,9 +42,9 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         
         setupView()
 
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.addObserver(self, selector: #selector(CreateAssetViewController.keboardDidShow(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CreateAssetViewController.keboardDidHide(_:)), name: NSNotification.Name.UIKeyboardDidHide, object: nil)
     }
     
     func setupView()
@@ -55,16 +55,16 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         assetLocation.text = ""
         
         //Recorder
-        memoPlayButton.hidden = true
-        memoDeleteButton.hidden = true
-        memoProgressSlider.hidden = true
+        memoPlayButton.isHidden = true
+        memoDeleteButton.isHidden = true
+        memoProgressSlider.isHidden = true
     }
     
-    func keboardDidShow(notification:NSNotification) {
+    func keboardDidShow(_ notification:Notification) {
         keyboardShowing = true
     }
     
-    func keboardDidHide(notification:NSNotification) {
+    func keboardDidHide(_ notification:Notification) {
         keyboardShowing = false
     }
 
@@ -84,16 +84,16 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         )
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let destination = segue.destinationViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destination = segue.destination
         
         switch segue.identifier ?? "" {
         case "pushSelectCategory":
-            (destination as! CategTypeViewController).setup(viewType: .Category, delegate: self)
+            (destination as! CategTypeViewController).setup(viewType: .category, delegate: self)
         case "pushSelectType":
-            (destination as! CategTypeViewController).setup(viewType: .Type, delegate: self)
+            (destination as! CategTypeViewController).setup(viewType: .type, delegate: self)
         case "pushSelectLocation":
-            (destination as! MapViewController).setup(.Select, delegate: self)
+            (destination as! MapViewController).setup(.select, delegate: self)
         default:
             break
         }
@@ -101,7 +101,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     //MARK: Button Actions
     
-    @IBAction func doneButtonPress(sender: AnyObject) {
+    @IBAction func doneButtonPress(_ sender: AnyObject) {
         
         if !validate() {
             return
@@ -111,17 +111,17 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         
         createAsset(newAsset) { (success, imageUploaded, memoUploaded) -> Void in
             if success {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    SVProgressHUD.showSuccessWithStatus("Successfully Created Asset!", maskType: .Black)
-                    NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: "popView", userInfo: nil, repeats: false)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    SVProgressHUD.showSuccess(withStatus: "Successfully Created Asset!", maskType: .black)
+                    Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
                 })
             }
             else {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    SVProgressHUD.showErrorWithStatus("Failed To Created Asset!", maskType: .Black)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    SVProgressHUD.showError(withStatus: "Failed To Created Asset!", maskType: .black)
                     sleep(2)
-                    self.navigationController?.popViewControllerAnimated(true)
-                    NSTimer.scheduledTimerWithTimeInterval(2.0, target: self, selector: "popView", userInfo: nil, repeats: false)
+                    self.navigationController?.popViewController(animated: true)
+                    Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
                 })
             }
         }
@@ -129,31 +129,31 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     func popView()
     {
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
-    typealias createAssetCompletionHandler = ((success:Bool, imageUploaded:Bool, memoUploaded:Bool)->Void)
+    typealias createAssetCompletionHandler = ((_ success:Bool, _ imageUploaded:Bool, _ memoUploaded:Bool)->Void)
     
-    func createAsset(asset:Asset, completion:createAssetCompletionHandler) {
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            SVProgressHUD.showWithStatus("Creating Asset", maskType: .Black)
+    func createAsset(_ asset:Asset, completion:@escaping createAssetCompletionHandler) {
+        DispatchQueue.main.async(execute: { () -> Void in
+            SVProgressHUD.show(withStatus: "Creating Asset", maskType: .black)
         })
         BackendAPI.create(asset) { (success, assetId) -> Void in
             if success {
                 self.uploadMedia(assetId, completion: completion)
             }
             else {
-                completion(success: false, imageUploaded: false, memoUploaded: false)
+                completion(false, false, false)
             }
         }
     }
     
-    func uploadMedia(assetId:Int, completion:createAssetCompletionHandler)
+    func uploadMedia(_ assetId:Int, completion:@escaping createAssetCompletionHandler)
     {
         if let img = self.assetImage {
             //Upload Image
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                SVProgressHUD.showWithStatus("Uploading Asset Image", maskType: .Black)
+            DispatchQueue.main.async(execute: { () -> Void in
+                SVProgressHUD.show(withStatus: "Uploading Asset Image", maskType: .black)
             })
             BackendAPI.uploadImage(img, assetId: assetId, progress: { (percent) -> Void in
             }, completion: { (success) -> Void in
@@ -170,23 +170,23 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    func uploadMediaMemo(assetId:Int, imageUploaded:Bool, completion:createAssetCompletionHandler) {
+    func uploadMediaMemo(_ assetId:Int, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler) {
         if let fileUrl = assetMemoURL {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                SVProgressHUD.showWithStatus("Uploading Asset Memo", maskType: .Black)
+            DispatchQueue.main.async(execute: { () -> Void in
+                SVProgressHUD.show(withStatus: "Uploading Asset Memo", maskType: .black)
             })
             BackendAPI.uploadMemo(fileUrl, assetId: assetId, progress: { (percent) -> Void in
             }, completion: { (success) -> Void in
                 if success {
-                    completion(success: true, imageUploaded: imageUploaded, memoUploaded: true)
+                    completion(true, imageUploaded, true)
                 }
                 else {
-                    completion(success: true, imageUploaded: imageUploaded, memoUploaded: false)
+                    completion(true, imageUploaded, false)
                 }
             })
         }
         else {
-            completion(success: true, imageUploaded: imageUploaded, memoUploaded: false)
+            completion(true, imageUploaded, false)
         }
     }
     
@@ -198,16 +198,16 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         let valid = (nameCount > 0 && descCount > 0 && typeCount > 0 && categCount > 0)
         
         if !valid {
-            let alert = UIAlertController(title: "Uh Oh!", message: "Required fields: Name, Description, Category, Type", preferredStyle: .Alert)
-            let cancelButton = UIAlertAction(title: "Ok", style: .Cancel, handler: nil)
+            let alert = UIAlertController(title: "Uh Oh!", message: "Required fields: Name, Description, Category, Type", preferredStyle: .alert)
+            let cancelButton = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
             alert.addAction(cancelButton)
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         }
         
         return valid
     }
     
-    @IBAction func addPhotoButtonPress(sender: AnyObject) {
+    @IBAction func addPhotoButtonPress(_ sender: AnyObject) {
         PhotoPicker.sharedInstance().requestPhoto(viewController: self) { (image) -> Void in
             print("Got Image!!")
             self.assetImage = image
@@ -216,23 +216,23 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    @IBAction func memoRecordButtonPress(sender: AnyObject) {
+    @IBAction func memoRecordButtonPress(_ sender: AnyObject) {
         if VoiceMemoRecorder.sharedInstance().recording {
             let fileURL = VoiceMemoRecorder.sharedInstance().stopRecorder()
-            assetMemoURL = fileURL
+            assetMemoURL = fileURL as URL
             
-            self.memoRecordButton.hidden = true
-            self.memoRecordButton.setImage(UIImage(named: "record.png"), forState: .Normal)
+            self.memoRecordButton.isHidden = true
+            self.memoRecordButton.setImage(UIImage(named: "record.png"), for: UIControlState())
             self.memoRecordButton.titleLabel?.text = "Record Voice Memo"
-            self.memoPlayButton.hidden = false
-            self.memoDeleteButton.hidden = false
-            self.memoProgressSlider.hidden = false
+            self.memoPlayButton.isHidden = false
+            self.memoDeleteButton.isHidden = false
+            self.memoProgressSlider.isHidden = false
         }
         else {
             VoiceMemoRecorder.sharedInstance().recordAudio { (success) -> Void in
                 if success {
                     //recording...
-                    self.memoRecordButton.setImage(UIImage(named: "stop.png"), forState: .Normal)
+                    self.memoRecordButton.setImage(UIImage(named: "stop.png"), for: UIControlState())
                     self.memoRecordButton.titleLabel?.text = "Stop Recording"
                 }
                 else {
@@ -242,7 +242,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    @IBAction func memoPlayButtonPress(sender: AnyObject) {
+    @IBAction func memoPlayButtonPress(_ sender: AnyObject) {
         if VoiceMemoRecorder.sharedInstance().playing()
         {
             VoiceMemoRecorder.sharedInstance().pause()
@@ -251,10 +251,10 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             self.memoProgressSlider.maximumValue = 1.0
             VoiceMemoRecorder.sharedInstance().play({ (progress, playing, finished) -> Void in
                 if !playing || finished {
-                    self.memoPlayButton.setImage(UIImage(named: "play.png"), forState: .Normal)
+                    self.memoPlayButton.setImage(UIImage(named: "play.png"), for: UIControlState())
                 }
                 else {
-                    self.memoPlayButton.setImage(UIImage(named: "pause.png"), forState: .Normal)
+                    self.memoPlayButton.setImage(UIImage(named: "pause.png"), for: UIControlState())
                 }
                 
                 if finished {
@@ -269,25 +269,25 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    @IBAction func memoDeleteButtonPress(sender: AnyObject) {
-        let alert = UIAlertController(title: "Are You Sure?", message: "This will erase your current recording. This action is not recoverable.", preferredStyle: .Alert)
-        let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
-        let deleteButton = UIAlertAction(title: "Delete", style: UIAlertActionStyle.Destructive) { (action) -> Void in
+    @IBAction func memoDeleteButtonPress(_ sender: AnyObject) {
+        let alert = UIAlertController(title: "Are You Sure?", message: "This will erase your current recording. This action is not recoverable.", preferredStyle: .alert)
+        let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        let deleteButton = UIAlertAction(title: "Delete", style: UIAlertActionStyle.destructive) { (action) -> Void in
             VoiceMemoRecorder.sharedInstance().deleteRecording()
             self.memoProgressSlider.value = 0.0
-            self.memoPlayButton.hidden = true
-            self.memoDeleteButton.hidden = true
-            self.memoProgressSlider.hidden = true
-            self.memoRecordButton.hidden = false
+            self.memoPlayButton.isHidden = true
+            self.memoDeleteButton.isHidden = true
+            self.memoProgressSlider.isHidden = true
+            self.memoRecordButton.isHidden = false
         }
         alert.addAction(cancelButton)
         alert.addAction(deleteButton)
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: Field Callbacks
     
-    func didSelectLocations(locations: [CLLocationCoordinate2D]) {
+    func didSelectLocations(_ locations: [CLLocationCoordinate2D]) {
         
         if locations.count == 0 {
             return
@@ -298,11 +298,11 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         assetLocation.text = String(format: "%.5f, %.5f", arguments: [assetLatitude,assetLongitude])
     }
     
-    func didSelectType(type:Type) {
+    func didSelectType(_ type:Type) {
         assetType.text = type.name
     }
     
-    func didSelectCategory(category:Category) {
+    func didSelectCategory(_ category:Category) {
         print("didSelectCategory with name: \(category)")
         assetCategory.text = category.name
         assetCategoryDescription = category.description
@@ -310,7 +310,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     //MARK: Table View Delegate
     
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if keyboardShowing {
             //Dismiss keyboard on scroll
             assetName.resignFirstResponder()
@@ -318,17 +318,17 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     //MARK: - 
     
-    func presentError(message:String) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+    func presentError(_ message:String) {
+        DispatchQueue.main.async { () -> Void in
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 }

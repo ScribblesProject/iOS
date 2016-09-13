@@ -8,67 +8,67 @@
 
 import UIKit
 
-public typealias PhotoCompletionHandler = ((image:UIImage?)->Void)
-public typealias MemoCompletionHandler = ((memo:NSData?)->Void)
+public typealias PhotoCompletionHandler = ((_ image:UIImage?)->Void)
+public typealias MemoCompletionHandler = ((_ memo:Data?)->Void)
 
 private let _sharedInstance = PhotoPicker()
 
-public class PhotoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+open class PhotoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private var photoHandler:PhotoCompletionHandler?
-    private var memoHandler:MemoCompletionHandler?
-    private var viewController:UIViewController?
-    private var imagePickerController:UIImagePickerController?
+    fileprivate var photoHandler:PhotoCompletionHandler?
+    fileprivate var memoHandler:MemoCompletionHandler?
+    fileprivate var viewController:UIViewController?
+    fileprivate var imagePickerController:UIImagePickerController?
     
-    public class func sharedInstance()->PhotoPicker {
+    open class func sharedInstance()->PhotoPicker {
         return _sharedInstance
     }
     
-    public func requestPhoto(viewController vc:UIViewController, completion:PhotoCompletionHandler)
+    open func requestPhoto(viewController vc:UIViewController, completion:@escaping PhotoCompletionHandler)
     {
         photoHandler = completion
         viewController = vc
         
-        let alert = UIAlertController(title: "Select Image", message: "What would you like to do?", preferredStyle: .ActionSheet)
-        let cancelButton = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        let takePhotoButton = UIAlertAction(title: "Take Photo", style: .Default) { (action) -> Void in
+        let alert = UIAlertController(title: "Select Image", message: "What would you like to do?", preferredStyle: .actionSheet)
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let takePhotoButton = UIAlertAction(title: "Take Photo", style: .default) { (action) -> Void in
             self.photoFromCamera()
         }
-        let selectPhotoButton = UIAlertAction(title: "Choose From Library", style: .Default) { (action) -> Void in
+        let selectPhotoButton = UIAlertAction(title: "Choose From Library", style: .default) { (action) -> Void in
             self.photoFromLibrary()
         }
         alert.addAction(cancelButton)
         alert.addAction(takePhotoButton)
         alert.addAction(selectPhotoButton)
         
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            self.viewController?.presentViewController(alert, animated: true, completion: nil)
+        DispatchQueue.main.async { () -> Void in
+            self.viewController?.present(alert, animated: true, completion: nil)
         }
     }
     
-    private func photoFromLibrary()
+    fileprivate func photoFromLibrary()
     {
         imagePickerController = UIImagePickerController()
-        imagePickerController?.sourceType = .PhotoLibrary;
+        imagePickerController?.sourceType = .photoLibrary;
         imagePickerController?.delegate = self;
-        viewController?.presentViewController(imagePickerController!, animated: true, completion: nil)
+        viewController?.present(imagePickerController!, animated: true, completion: nil)
     }
     
-    private func photoFromCamera()
+    fileprivate func photoFromCamera()
     {
         imagePickerController = UIImagePickerController()
         imagePickerController?.delegate = self;
         imagePickerController?.allowsEditing = true
-        imagePickerController?.sourceType = .Camera;
-        viewController?.presentViewController(imagePickerController!, animated: true, completion: nil)
+        imagePickerController?.sourceType = .camera;
+        viewController?.present(imagePickerController!, animated: true, completion: nil)
     }
     
-    public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?)
+    open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?)
     {
         print("Picker Finished")
         let chosenImage = image
-        photoHandler?(image: chosenImage)
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        photoHandler?(chosenImage)
+        picker.dismiss(animated: true, completion: nil)
         imagePickerController = nil
     }
 }

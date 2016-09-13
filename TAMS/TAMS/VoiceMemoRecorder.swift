@@ -8,69 +8,89 @@
 
 import UIKit
 import AVFoundation
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 private let _sharedInstance = VoiceMemoRecorder()
 
-public typealias RecorderStartHandler = ((success:Bool)->Void)
-public typealias PlayerProgressHandler = ((progress:Double, playing:Bool, finished:Bool)->Void)
+public typealias RecorderStartHandler = ((_ success:Bool)->Void)
+public typealias PlayerProgressHandler = ((_ progress:Double, _ playing:Bool, _ finished:Bool)->Void)
 
-public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
+open class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
     
-    let fileURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent("voiceRecording.aac")
+    let fileURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("voiceRecording.aac")
     var audioRecorder:AVAudioRecorder?
     var recording:Bool = false
     var audioPlayer:AVPlayer?
-    var audioPlayerProgressTimer:NSTimer?
+    var audioPlayerProgressTimer:Timer?
     var audioPlayerProgressHandler:PlayerProgressHandler?
 
-    public class func sharedInstance()->VoiceMemoRecorder
+    open class func sharedInstance()->VoiceMemoRecorder
     {
         return _sharedInstance
     }
     
-    public func recordingExists()->Bool {
-        return self.fileURL.checkResourceIsReachableAndReturnError(nil)
+    open func recordingExists()->Bool {
+        return (self.fileURL as NSURL).checkResourceIsReachableAndReturnError(nil)
     }
     
-    private func reset()
+    fileprivate func reset()
     {
         audioRecorder?.stop()
         audioRecorder = nil
         audioPlayer?.pause()
         audioPlayer = nil
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             self.audioPlayerProgressTimer?.invalidate()
             self.audioPlayerProgressTimer = nil
         }
     }
     
-    public func deleteRecording()
+    open func deleteRecording()
     {
         reset()
         
-        if self.fileURL.checkResourceIsReachableAndReturnError(nil) {
-            try! NSFileManager.defaultManager().removeItemAtURL(fileURL)
+        if (self.fileURL as NSURL).checkResourceIsReachableAndReturnError(nil) {
+            try! FileManager.default.removeItem(at: fileURL)
             print("Deleting Recording...")
         }
     }
     
-    public func isRecording()->Bool
+    open func isRecording()->Bool
     {
         return recording
     }
     
-    public func recordAudio(startHandler:RecorderStartHandler)
+    open func recordAudio(_ startHandler:@escaping RecorderStartHandler)
     {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             //init
             let audioSession:AVAudioSession = AVAudioSession.sharedInstance()
             
             self.deleteRecording()
             
             //ask for permission
-            if (audioSession.respondsToSelector("requestRecordPermission:")) {
+            if (audioSession.responds(to: #selector(AVAudioSession.requestRecordPermission(_:)))) {
                 AVAudioSession.sharedInstance().requestRecordPermission({(granted: Bool)-> Void in
                     if granted {
                         print("granted")
@@ -81,21 +101,21 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
                         
                         //create AnyObject of settings
                         let settings: [String : AnyObject] = [
-                            AVFormatIDKey:Int(kAudioFormatMPEG4AAC), //Int required in Swift2
-                            AVSampleRateKey:11025.0,
-                            AVNumberOfChannelsKey:2,
-                            AVEncoderAudioQualityKey:AVAudioQuality.Low.rawValue
+                            AVFormatIDKey:Int(kAudioFormatMPEG4AAC) as AnyObject, //Int required in Swift2
+                            AVSampleRateKey:11025.0 as AnyObject,
+                            AVNumberOfChannelsKey:2 as AnyObject,
+                            AVEncoderAudioQualityKey:AVAudioQuality.low.rawValue as AnyObject
                         ]
                         
                         //record
-                        try! self.audioRecorder = AVAudioRecorder(URL: self.fileURL, settings: settings)
+                        try! self.audioRecorder = AVAudioRecorder(url: self.fileURL, settings: settings)
                         self.audioRecorder?.record()
                         self.recording = true
-                        startHandler(success: true)
+                        startHandler(true)
                         
                     } else{
                         print("not granted")
-                        startHandler(success: false)
+                        startHandler(false)
                     }
                 })
             }
@@ -103,9 +123,9 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
     }
     
     //Returns the audio file url
-    public func stopRecorder()->NSURL
+    open func stopRecorder()->URL
     {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             self.audioRecorder?.stop()
             self.recording = false
         }
@@ -114,24 +134,24 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
     }
     
     //Returns false if error
-    private func initPlayer() {
+    fileprivate func initPlayer() {
         let audioSession:AVAudioSession = AVAudioSession.sharedInstance()
         try! audioSession.setCategory(AVAudioSessionCategoryPlayback)
         try! audioSession.setActive(true)
-        self.audioPlayer = AVPlayer(playerItem: AVPlayerItem(asset: AVAsset(URL: self.fileURL)))
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "itemDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: self.audioPlayer!.currentItem)
+        self.audioPlayer = AVPlayer(playerItem: AVPlayerItem(asset: AVAsset(url: self.fileURL)))
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.addObserver(self, selector: #selector(VoiceMemoRecorder.itemDidFinishPlaying(_:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: self.audioPlayer!.currentItem)
     }
     
-    public func playing()->Bool
+    open func playing()->Bool
     {
         return (self.audioPlayer?.rate > 0) ?? false
     }
     
-    public func play(progressHandler:PlayerProgressHandler) {
+    open func play(_ progressHandler:@escaping PlayerProgressHandler) {
         audioPlayerProgressHandler = progressHandler
         
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+        DispatchQueue.main.async { () -> Void in
             self.audioPlayerProgressTimer?.invalidate()
             self.audioPlayerProgressTimer = nil
             
@@ -142,12 +162,12 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
             
             self.audioPlayer?.play()
             self.reportProgress(false)
-            self.audioPlayerProgressTimer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "updatePlayerProgress", userInfo: nil, repeats: true)
+            self.audioPlayerProgressTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(VoiceMemoRecorder.updatePlayerProgress), userInfo: nil, repeats: true)
         }
     }
     
-    public func pause() {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
+    open func pause() {
+        DispatchQueue.main.async { () -> Void in
             self.audioPlayer?.pause()
             self.audioPlayerProgressTimer?.invalidate()
             self.audioPlayerProgressTimer = nil
@@ -155,12 +175,12 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
         }
     }
     
-    public func updatePlayerProgress()
+    open func updatePlayerProgress()
     {
         reportProgress(false)
     }
     
-    private func reportProgress(finished:Bool)
+    fileprivate func reportProgress(_ finished:Bool)
     {
         var progress = 0.0
         if finished {
@@ -175,12 +195,12 @@ public class VoiceMemoRecorder: NSObject, AVAudioPlayerDelegate {
             print("CurrentTime: \(currentTime) Total:\(totalTime) progress:\(progress) finished:\(finished)")
         }
         let playing = self.playing()
-        audioPlayerProgressHandler?(progress: progress, playing: playing, finished: finished)
+        audioPlayerProgressHandler?(progress, playing, finished)
     }
     
     //MARK: Audio Player Delegate
     
-    public func itemDidFinishPlaying(notification:NSNotification) {
+    open func itemDidFinishPlaying(_ notification:Notification) {
         
         reportProgress(true)
         

@@ -10,39 +10,39 @@ import UIKit
 import SVProgressHUD
 
 public protocol CategTypeViewControllerProtocol {
-    func didSelectType(type:Type)
-    func didSelectCategory(category:Category)
+    func didSelectType(_ type:Type)
+    func didSelectCategory(_ category:Category)
 }
 
-public class CategTypeViewController: UITableViewController {
+open class CategTypeViewController: UITableViewController {
     
-    var viewType:CategTypeViewType = .Type
+    var viewType:CategTypeViewType = .type
     var delegate:CategTypeViewControllerProtocol?
     var assetTypeList:[Type] = []
     var assetCategoryList:[Category] = []
     
     public enum CategTypeViewType {
-        case Category, Type
+        case category, type
     }
     
-    public func setup(viewType vt:CategTypeViewType, delegate del:CategTypeViewControllerProtocol)
+    open func setup(viewType vt:CategTypeViewType, delegate del:CategTypeViewControllerProtocol)
     {
         viewType = vt
         delegate = del
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if viewType == .Type {
+        if viewType == .type {
             setupTypes()
         }
-        else if viewType == .Category {
+        else if viewType == .category {
             setupCategories()
         }
     }
     
-    public func setupCategories()
+    open func setupCategories()
     {
         self.title = "Select Category"
 //        SVProgressHUD.showWithStatus("Loading..", maskType: .Black)
@@ -54,7 +54,7 @@ public class CategTypeViewController: UITableViewController {
         }
     }
     
-    public func setupTypes()
+    open func setupTypes()
     {
         self.title = "Select Type"
         BackendAPI.typeList { (types) -> Void in
@@ -64,45 +64,45 @@ public class CategTypeViewController: UITableViewController {
         }
     }
     
-    func presentError(message:String) {
-        dispatch_async(dispatch_get_main_queue()) { () -> Void in
-            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+    func presentError(_ message:String) {
+        DispatchQueue.main.async { () -> Void in
+            let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
-    @IBAction func addButtonPressed(sender: AnyObject) {
+    @IBAction func addButtonPressed(_ sender: AnyObject) {
         
         var alert:UIAlertController
         
         var typeName = "Type"
-        if viewType == .Category {
+        if viewType == .category {
             typeName = "Category"
         }
-        alert = UIAlertController(title: "Create \(typeName)", message: "", preferredStyle: .Alert)
+        alert = UIAlertController(title: "Create \(typeName)", message: "", preferredStyle: .alert)
         
         //Add Name Field
-        alert.addTextFieldWithConfigurationHandler { (textField) -> Void in
+        alert.addTextField { (textField) -> Void in
             textField.placeholder = "Name"
         }
         
         //Add Description Field
-        if viewType == .Category {
-            alert.addTextFieldWithConfigurationHandler { (textField) -> Void in
+        if viewType == .category {
+            alert.addTextField { (textField) -> Void in
                 textField.placeholder = "Description"
             }
         }
         
-        let cancelButton = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alert.addAction(cancelButton)
         
         //Add Ok Button with handler.
-        let okButton = UIAlertAction(title: "Ok", style: .Default) { (okAction) -> Void in
+        let okButton = UIAlertAction(title: "Ok", style: .default) { (okAction) -> Void in
             let nameField = alert.textFields!.first!
             
             switch self.viewType {
-            case .Category:
+            case .category:
                 let descField = alert.textFields!.last!
                 if nameField.text?.characters.count ?? 0 == 0 || descField.text?.characters.count ?? 0 == 0 {
                     self.presentError("Please fill in both name and description")
@@ -110,44 +110,44 @@ public class CategTypeViewController: UITableViewController {
                 }
                 let newCateg = Category(id: 0, name: nameField.text ?? "", description: descField.text ?? "")
                 self.delegate?.didSelectCategory(newCateg)
-                self.navigationController?.popViewControllerAnimated(true)
+                self.navigationController?.popViewController(animated: true)
                 
-            case .Type:
+            case .type:
                 if nameField.text?.characters.count ?? 0 == 0 {
                     self.presentError("Please fill in name")
                     return
                 }
                 let newType = Type(id: 0, name: nameField.text ?? "")
                 self.delegate?.didSelectType(newType)
-                self.navigationController?.popViewControllerAnimated(true)
+                self.navigationController?.popViewController(animated: true)
             }
         }
         alert.addAction(okButton)
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
 //MARK: Table View Data Source
     
-    public override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch viewType {
-        case .Category:
+        case .category:
             return self.assetCategoryList.count
-        case .Type:
+        case .type:
             return self.assetTypeList.count
         }
     }
     
-    public override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("basicCell")!
+    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "basicCell")!
         
         switch viewType {
-        case .Category:
-            let currentCateg = assetCategoryList[indexPath.row]
+        case .category:
+            let currentCateg = assetCategoryList[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = currentCateg.name
             cell.detailTextLabel?.text = currentCateg.description
             
-        case .Type:
-            let currentType = assetTypeList[indexPath.row]
+        case .type:
+            let currentType = assetTypeList[(indexPath as NSIndexPath).row]
             cell.textLabel?.text = currentType.name
             cell.detailTextLabel?.text = ""
         }
@@ -155,17 +155,17 @@ public class CategTypeViewController: UITableViewController {
         return cell
     }
     
-    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch viewType {
-        case .Category:
-            let currentCateg = assetCategoryList[indexPath.row]
+        case .category:
+            let currentCateg = assetCategoryList[(indexPath as NSIndexPath).row]
             delegate?.didSelectCategory(currentCateg)
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.popViewController(animated: true)
             
-        case .Type:
-            let currentType = assetTypeList[indexPath.row]
+        case .type:
+            let currentType = assetTypeList[(indexPath as NSIndexPath).row]
             delegate?.didSelectType(currentType)
-            self.navigationController?.popViewControllerAnimated(true)
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }

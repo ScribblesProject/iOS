@@ -9,28 +9,48 @@
 import UIKit
 import MapKit
 import CoreLocation
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 public protocol MapViewControllerProtocol {
-    func didSelectLocations(locations:[CLLocationCoordinate2D])
+    func didSelectLocations(_ locations:[CLLocationCoordinate2D])
 }
 
 public enum MapViewMode {
-    case Tab //Default
-    case Select
+    case tab //Default
+    case select
 }
 
-public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     @IBOutlet var mapView: MKMapView!
     
     let locationManager = CLLocationManager()
     var currentLocation:CLLocation?;
-    var viewMode:MapViewMode = .Tab
+    var viewMode:MapViewMode = .tab
     var assets = [Asset]()
     var selectPinLocations:[CLLocationCoordinate2D] = []
     var delegate:MapViewControllerProtocol?
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         mapView.delegate = self
@@ -39,31 +59,31 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         setupInitialMapPosition()
         
         switch viewMode {
-        case .Tab:
+        case .tab:
             setupForTab()
-        case .Select:
+        case .select:
             setupForSelect()
         }
     }
     
-    override public func viewWillAppear(animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         switch viewMode {
-        case .Tab:
+        case .tab:
             updateForTab()
-        case .Select:
+        case .select:
             break
 //            setupForSelect()
         }
     }
     
-    override public func viewDidAppear(animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
     //MARK: Setup
     
-    public func setup(mode:MapViewMode, delegate del:MapViewControllerProtocol) {
+    open func setup(_ mode:MapViewMode, delegate del:MapViewControllerProtocol) {
         viewMode = mode
         delegate = del
     }
@@ -88,7 +108,7 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
     func setupForTab() {
         //Remove the "Done" button from toolbar
         if self.navigationItem.rightBarButtonItems?.count > 1 {
-            self.navigationItem.rightBarButtonItems?.removeAtIndex(0)
+            self.navigationItem.rightBarButtonItems?.remove(at: 0)
         }
     }
     
@@ -97,9 +117,9 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         reload()
     }
     
-    @IBAction func doneButtonPressed(sender: AnyObject) {
+    @IBAction func doneButtonPressed(_ sender: AnyObject) {
         delegate?.didSelectLocations(selectPinLocations)
-        self.navigationController?.popViewControllerAnimated(true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     func setupForSelect() {
@@ -107,13 +127,13 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         self.title = "Select Location"
         
         //Add Tap Gesture Recognizer
-        let lpgr = UILongPressGestureRecognizer(target: self, action: "handleSelectPin:")
+        let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.handleSelectPin(_:)))
         lpgr.minimumPressDuration = 1.0
         self.mapView.addGestureRecognizer(lpgr)
     }
     
-    func handleSelectPin(recognizer:UIGestureRecognizer) {
-        if recognizer.state != .Began {
+    func handleSelectPin(_ recognizer:UIGestureRecognizer) {
+        if recognizer.state != .began {
             return
         }
         
@@ -125,8 +145,8 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
             self.mapView.removeAnnotation(pin)
         }
         
-        let touchPoint = recognizer.locationInView(self.mapView)
-        let touchMapCoordinate = self.mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+        let touchPoint = recognizer.location(in: self.mapView)
+        let touchMapCoordinate = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
         
         selectPinLocations += [touchMapCoordinate]
         
@@ -136,13 +156,13 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         self.mapView.addAnnotation(point)
     }
     
-    @IBAction func locateUser(sender: AnyObject) {
+    @IBAction func locateUser(_ sender: AnyObject) {
         if let loc = currentLocation {
-            mapView.setCenterCoordinate(loc.coordinate, animated: true)
+            mapView.setCenter(loc.coordinate, animated: true)
         }
     }
     
-    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //Setup mapview for initial ping
         if currentLocation == nil {
             mapView.showsUserLocation = true
@@ -150,12 +170,12 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         
         currentLocation = locations[0]
     }
-  public   
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+  open   
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("LOCATION MANAGER ERROR: \(error)")
     }
     
-    func listDiffers(list:[Asset])->Bool {
+    func listDiffers(_ list:[Asset])->Bool {
         var currentAssetNames = [String:(lat:Double, long:Double)]()
         var hasChanges = false
         if list.count != self.assets.count {
@@ -181,12 +201,12 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         return hasChanges
     }
     
-    public func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
+    open func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         for annView in views
         {
             let endFrame = annView.frame;
-            annView.frame = CGRectOffset(endFrame, 0, -500);
-            UIView.animateWithDuration(0.5, animations: { () -> Void in
+            annView.frame = endFrame.offsetBy(dx: 0, dy: -500);
+            UIView.animate(withDuration: 0.5, animations: { () -> Void in
                 annView.frame = endFrame
             })
 //            [UIView animateWithDuration:0.5
@@ -220,7 +240,7 @@ public class MapViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
     }
     
-    func dropPin(ast:Asset)
+    func dropPin(_ ast:Asset)
     {
         let coord = CLLocationCoordinate2D(latitude: ast.latitude, longitude: ast.longitude)
         let point = MKPointAnnotation()

@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 
 private let BASE = "https://tams-142602.appspot.com"
-//private let BASE = "http://localhost:8000"
+//private let BASE = "http://localhost:9000"
 
 public struct Asset {
     var id:Int
@@ -28,14 +28,14 @@ public struct Asset {
     func formatDictionary()->[String:AnyObject]
     {
         var result = [String:AnyObject]()
-        result["id"] = id
-        result["name"] = name
-        result["description"] = description
-        result["category"] = category
-        result["category-description"] = category_description
-        result["type-name"] = type
-        result["latitude"] = latitude
-        result["longitude"] = longitude
+        result["id"] = id as AnyObject?
+        result["name"] = name as AnyObject?
+        result["description"] = description as AnyObject?
+        result["category"] = category as AnyObject?
+        result["category-description"] = category_description as AnyObject?
+        result["type-name"] = type as AnyObject?
+        result["latitude"] = latitude as AnyObject?
+        result["longitude"] = longitude as AnyObject?
         return result
     }
 }
@@ -47,8 +47,8 @@ public struct Type {
     func formatDictionary()->[String:AnyObject]
     {
         var result = [String:AnyObject]()
-        result["id"] = id
-        result["name"] = name
+        result["id"] = id as AnyObject?
+        result["name"] = name as AnyObject?
         return result
     }
 }
@@ -61,16 +61,16 @@ public struct Category {
     func formatDictionary()->[String:AnyObject]
     {
         var result = [String:AnyObject]()
-        result["id"] = id
-        result["name"] = name
-        result["description"] = description
+        result["id"] = id as AnyObject?
+        result["name"] = name as AnyObject?
+        result["description"] = description as AnyObject?
         return result
     }
 }
 
 class BackendAPI: NSObject {
     
-    private class func parseAsset(JSON:[String:AnyObject])->Asset {
+    fileprivate class func parseAsset(_ JSON:[String:AnyObject])->Asset {
         let id              = JSON["id"] as! Int
         let name            = JSON["name"] as! String
         let description     = JSON["description"] as! String
@@ -100,32 +100,32 @@ class BackendAPI: NSObject {
         return BASE
     }
     
-    class func printResponse(response:Response<AnyObject, NSError>) {
+    class func printResponse(_ response:DataResponse<Any>) {
         let error = response.result.error
         print("\n------------\n[ERROR] \(error)")
         print(response.debugDescription)
         print(response.data)
         print(response.result)
         if let data = response.data {
-            print(String(data: data, encoding: NSUTF8StringEncoding))
+            print(String(data: data, encoding: String.Encoding.utf8))
         }
         print("------------\n")
     }
     
 //MARK: Asset Methods
     
-    class func list(completion:(([Asset])->Void))
+    class func list(_ completion:@escaping (([Asset])->Void))
     {
         let endpoint = "/api/asset/list/"
         print(BASE+endpoint)
         
-        Alamofire.request(.GET, BASE+endpoint)
+        Alamofire.request(BASE+endpoint, method: .get)
             .validate()
             .responseJSON { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     var result = [Asset]()
-                    if let JSON = response.result.value {
+                    if let JSON = response.result.value as? [AnyHashable:Any] {
                         let assets = JSON["assets"] as? [[String:AnyObject]] ?? []
                         for item in assets {
                             result.append(self.parseAsset(item))
@@ -133,31 +133,31 @@ class BackendAPI: NSObject {
                     }
                     completion(result)
                     
-                case .Failure(let error):
+                case .failure(let error):
                     print("[ERROR] \(error)")
                     completion([])
                 }
         }
     }
     
-    class func delete(newAsset:Asset, completion:((Bool)->Void))
+    class func delete(_ newAsset:Asset, completion:@escaping ((Bool)->Void))
     {
         let endpoint = "/api/asset/delete/\(newAsset.id)/"
         print(BASE+endpoint)
         
-        Alamofire.request(.DELETE, BASE+endpoint)
+        Alamofire.request(BASE+endpoint, method: .delete)
             .validate()
             .responseJSON { response in
                 switch response.result {
-                case .Success:
-                    if let JSON = response.result.value {
+                case .success:
+                    if let JSON = response.result.value as? [AnyHashable:Any] {
                         let success = JSON["success"] as? Bool ?? false
                         if success {
                             completion(true)
                             return
                         }
                     }
-                case .Failure:
+                case .failure:
                     break
                 }
                 
@@ -167,51 +167,51 @@ class BackendAPI: NSObject {
         }
     }
     
-    class func create(newAsset:Asset, completion:((success:Bool, id:Int)->Void))
+    class func create(_ newAsset:Asset, completion:@escaping ((_ success:Bool, _ id:Int)->Void))
     {
         let endpoint = "/api/asset/create/"
         print(BASE+endpoint)
         
         let parameters = newAsset.formatDictionary()
         let headers = [String:String]()
+
         
-        Alamofire.request(.POST, BASE+endpoint, parameters: parameters, encoding: .JSON, headers: headers)
-            .validate()
-            .responseJSON { (response) -> Void in
-                switch response.result {
-                case .Success:
-                    if let JSON = response.result.value {
-                        let success = JSON["success"] as? Bool ?? false
-                        let assetId = JSON["id"] as? Int ?? -1
-                        if success && assetId != -1 {
-                            completion(success: true, id: assetId)
-                            return
-                        }
+        Alamofire.request(BASE+endpoint, method: HTTPMethod.post, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+        .validate()
+        .responseJSON { (response) in
+            switch response.result {
+            case .success:
+                if let JSON = response.result.value as? [AnyHashable:Any] {
+                    let success = JSON["success"] as? Bool ?? false
+                    let assetId = JSON["id"] as? Int ?? -1
+                    if success && assetId != -1 {
+                        completion(true, assetId)
+                        return
                     }
-                case .Failure:
-                    break
                 }
-                
+                break
+            case .failure:
                 printResponse(response)
-                completion(success: false, id: -1)
-                return
+                completion(false, -1)
+                break
+            }
         }
     }
     
 //MARK: Asset-Type Methods
     
-    class func typeList(completion:(([Type])->Void))
+    class func typeList(_ completion:@escaping (([Type])->Void))
     {
         let endpoint = "/api/asset/type/list/"
         print(BASE+endpoint)
         
-        Alamofire.request(.GET, BASE+endpoint)
+        Alamofire.request(BASE+endpoint, method:.get)
             .validate()
             .responseJSON { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     var result = [Type]()
-                    if let JSON = response.result.value {
+                    if let JSON = response.result.value as? [AnyHashable:Any] {
                         let types = JSON["types"] as? [[String:AnyObject]] ?? []
                         for item in types {
                             let tId = item["id"] as? Int ?? 0
@@ -222,7 +222,7 @@ class BackendAPI: NSObject {
                     }
                     completion(result)
                     
-                case .Failure(let error):
+                case .failure(let error):
                     print("[ERROR] \(error)")
                     completion([])
                 }
@@ -231,18 +231,18 @@ class BackendAPI: NSObject {
     
 //MARK: Asset-Category Methods
     
-    class func categoryList(completion:(([Category])->Void))
+    class func categoryList(_ completion:@escaping (([Category])->Void))
     {
         let endpoint = "/api/asset/category/list/"
         print(BASE+endpoint)
         
-        Alamofire.request(.GET, BASE+endpoint)
+        Alamofire.request(BASE+endpoint, method: .get)
             .validate()
             .responseJSON { response in
                 switch response.result {
-                case .Success:
+                case .success:
                     var result = [Category]()
-                    if let JSON = response.result.value {
+                    if let JSON = response.result.value as? [AnyHashable:Any] {
                         let types = JSON["categories"] as? [[String:AnyObject]] ?? []
                         for item in types {
                             let cId = item["id"] as? Int ?? 0
@@ -254,7 +254,7 @@ class BackendAPI: NSObject {
                     }
                     completion(result)
                     
-                case .Failure(let error):
+                case .failure(let error):
                     print("[ERROR] \(error)")
                     completion([])
                 }
@@ -263,85 +263,57 @@ class BackendAPI: NSObject {
     
 //MARK: Media Methods
     
-    class func uploadImage(image:UIImage, assetId:Int, progress:((percent:Double)->Void), completion:((Bool)->Void))
+    class func uploadImage(_ image:UIImage, assetId:Int, progress:@escaping ((_ percent:Double)->Void), completion:@escaping ((Bool)->Void))
     {
         let endpoint = "/api/asset/media/image-upload/\(assetId)/"
         let imageData = UIImageJPEGRepresentation(image, 0.5)!
         
         print(BASE+endpoint)
         
-        Alamofire.upload(.POST, BASE+endpoint, multipartFormData: {
-            multipartFormData in
-            
-            multipartFormData.appendBodyPart(data: imageData, name: "image", fileName: "file.jpg", mimeType: "image/jpeg")
-            
-            }, encodingCompletion: {
-                encodingResult in
-                
-                switch encodingResult {
-                case .Success(let upload, _, _):
-                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpected) -> Void in
-                        if imageData.length > 0 {
-                            progress(percent: Double(totalBytesWritten)/Double(imageData.length))
-                        }
-                    })
-                    upload.responseJSON { response in
-                        if let JSON = response.result.value {
-                            let success = JSON["success"] as? Bool ?? false
-                            if success {
-                                completion(true)
-                                return
-                            }
-                        }
-                    }
-                case .Failure(let encodingError):
-                    print(encodingError)
+        let url = BASE + endpoint
+        let headers = ["content-type":"image/jpeg"]
+        
+        Alamofire.upload(imageData, to: url, method: .post, headers: headers).uploadProgress { (prog) in
+            progress(prog.fractionCompleted)
+        }
+        .responseJSON { (response) in
+            if let JSON = response.result.value as? [AnyHashable:Any] {
+                let success = JSON["success"] as? Bool ?? false
+                if success {
+                    completion(true)
+                    return
                 }
-                
-                completion(false)
-                return
-        })
+            }
+            
+            //failed
+            print(response.result.error)
+            completion(false)
+        }
     }
     
-    class func uploadMemo(memoFileURL:NSURL, assetId:Int, progress:((percent:Double)->Void), completion:((Bool)->Void))
+    class func uploadMemo(_ memoFileURL:URL, assetId:Int, progress:@escaping ((_ percent:Double)->Void), completion:@escaping ((Bool)->Void))
     {
         let endpoint = "/api/asset/media/voice-upload/\(assetId)/"
         
         print(BASE+endpoint)
         
-        Alamofire.upload(.POST, BASE+endpoint, multipartFormData: {
-            multipartFormData in
-            
-            multipartFormData.appendBodyPart(fileURL: memoFileURL, name: "audio", fileName: "file.aac", mimeType: "image/aac")
-            
-            }, encodingCompletion: {
-                encodingResult in
-                
-                switch encodingResult {
-                case .Success(let upload, _, _):
-                    upload.progress({ (bytesWritten, totalBytesWritten, totalBytesExpected) -> Void in
-                        if totalBytesExpected > 0 {
-                            progress(percent: Double(totalBytesWritten)/Double(totalBytesExpected))
-                        }
-                    })
-                    upload.responseJSON { response in
-                        if let JSON = response.result.value {
-                            print(JSON)
-                            let success = JSON["success"] as? Bool ?? false
-                            if success {
-                                completion(true)
-                                return
-                            }
-                        }
-                    }
-                case .Failure(let encodingError):
-                    print(encodingError)
+        let headers = ["content-type":"audio/aac"]
+        
+        Alamofire.upload(memoFileURL, to: BASE+endpoint, method: .post, headers: headers).uploadProgress { (prog) in
+            progress(prog.fractionCompleted)
+        }
+        .responseJSON { (response) in
+            if let JSON = response.result.value as? [AnyHashable:Any] {
+                print(JSON)
+                let success = JSON["success"] as? Bool ?? false
+                if success {
+                    completion(true)
+                    return
                 }
-                
-                print("FAILED!!! \(encodingResult)")
-                completion(false)
-                return
-        })
+            }
+            completion(false)
+            return
+        }
     }
 }
 
