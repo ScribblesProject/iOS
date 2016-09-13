@@ -71,7 +71,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     func formatAsset()->Asset
     {
         return Asset(
-            id: -1,
+            id: 0,
             name: assetName.text ?? "",
             description: assetDescription.text ?? "",
             type: assetType.text ?? "",
@@ -79,8 +79,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             category_description: assetCategoryDescription,
             imageUrl: "",
             voiceUrl: "",
-            latitude: assetLatitude,
-            longitude: assetLongitude
+            locations: [Int:Any]() as! [Int : Asset.LocationType]
         )
     }
     
@@ -120,7 +119,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
                 DispatchQueue.main.async(execute: { () -> Void in
                     SVProgressHUD.showError(withStatus: "Failed To Created Asset!", maskType: .black)
                     sleep(2)
-                    self.navigationController?.popViewController(animated: true)
+                    _ = self.navigationController?.popViewController(animated: true)
                     Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
                 })
             }
@@ -129,7 +128,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     func popView()
     {
-        self.navigationController?.popViewController(animated: true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
     typealias createAssetCompletionHandler = ((_ success:Bool, _ imageUploaded:Bool, _ memoUploaded:Bool)->Void)
@@ -148,7 +147,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    func uploadMedia(_ assetId:Int, completion:@escaping createAssetCompletionHandler)
+    
+    func uploadMedia(_ assetId:NSNumber, completion:@escaping createAssetCompletionHandler)
     {
         if let img = self.assetImage {
             //Upload Image
@@ -170,7 +170,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
-    func uploadMediaMemo(_ assetId:Int, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler) {
+    
+    func uploadMediaMemo(_ assetId:NSNumber, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler) {
         if let fileUrl = assetMemoURL {
             DispatchQueue.main.async(execute: { () -> Void in
                 SVProgressHUD.show(withStatus: "Uploading Asset Memo", maskType: .black)
@@ -190,6 +191,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
+    
     func validate()->Bool {
         let nameCount = assetName.text?.characters.count ?? 0
         let descCount = assetDescription.text.characters.count
@@ -207,6 +209,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         return valid
     }
     
+    
     @IBAction func addPhotoButtonPress(_ sender: AnyObject) {
         PhotoPicker.sharedInstance().requestPhoto(viewController: self) { (image) -> Void in
             print("Got Image!!")
@@ -215,6 +218,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             (sender as? UIButton)?.backgroundColor = UIColor(white: 1.0, alpha: 0.2)
         }
     }
+    
     
     @IBAction func memoRecordButtonPress(_ sender: AnyObject) {
         if VoiceMemoRecorder.sharedInstance().recording {

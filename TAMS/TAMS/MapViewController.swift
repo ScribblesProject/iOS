@@ -170,27 +170,47 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         
         currentLocation = locations[0]
     }
-  open   
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    
+    open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("LOCATION MANAGER ERROR: \(error)")
     }
     
+    //Check if given list differs from global asset list
     func listDiffers(_ list:[Asset])->Bool {
-        var currentAssetNames = [String:(lat:Double, long:Double)]()
+        
+        //Array of Asset.LocationType
+        var currentAssetLocs = [String : Any]()
+        
         var hasChanges = false
         if list.count != self.assets.count {
             //Are counts different?
             hasChanges = true
         }
         else {
-            //Or, check for differences in name/lat/long
+            //Store location dict for easy lookup
             for item in self.assets {
-                currentAssetNames[item.name] = (lat:item.latitude, long:item.longitude)
+                currentAssetLocs[item.name] = item.locations
             }
+            //For each list item, lookup currentAssetLoc
             for item in list {
-                if let match = currentAssetNames[item.name] {
-                    if match.lat != item.latitude || match.long != item.longitude {
+                if let match = currentAssetLocs[item.name] as? [Int:Asset.LocationType] {
+                    if item.locations.count != match.count {
                         hasChanges = true
+                        break
+                    }
+                    
+                    for (order, currentLoc) in match
+                    {
+                        if let itemLoc = item.locations[order] {
+                            if currentLoc != itemLoc {
+                                hasChanges = true
+                                break
+                            }
+                        }
+                        else {
+                            hasChanges = true
+                            break
+                        }
                     }
                 }
                 else {
@@ -230,7 +250,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     func layoutAssets() {
         removePins()
         for item in assets {
-            dropPin(item)
+            dropPins(item)
         }
     }
     
@@ -240,14 +260,16 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         }
     }
     
-    func dropPin(_ ast:Asset)
+    func dropPins(_ ast:Asset)
     {
-        let coord = CLLocationCoordinate2D(latitude: ast.latitude, longitude: ast.longitude)
-        let point = MKPointAnnotation()
-        point.coordinate = coord
-        point.title = ast.name
-        point.subtitle = ast.description
-        self.mapView.addAnnotation(point)
+        for (order, loc) in ast.locations {
+            let coord = CLLocationCoordinate2D(latitude: loc.latitude, longitude: loc.longitude)
+            let point = MKPointAnnotation()
+            point.coordinate = coord
+            point.title = ast.name
+            point.subtitle = ast.description
+            self.mapView.addAnnotation(point)
+        }
     }
     
 }
