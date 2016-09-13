@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To attach a memo to assets to give more context to the object/place</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>To attach to assets for easier identification of the object/place</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
