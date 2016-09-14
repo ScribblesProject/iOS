@@ -124,7 +124,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         reload()
     }
     
-    @IBAction func resetButtonPressed(_ sender: AnyObject) {
+    @IBAction func resetButtonPressed(_ sender: AnyObject?) {
         for (_, polyline) in self.polylines {
             self.mapView.remove(polyline)
         }
@@ -271,18 +271,18 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     }
     
     func layoutAssets() {
-        removePins()
+        resetButtonPressed(nil)
         for item in assets {
             dropPins(item)
         }
     }
     
     
-    func removePins() {
-        for annotation in self.mapView.annotations {
-            self.mapView.removeAnnotation(annotation)
-        }
-    }
+//    func removePins() {
+//        for annotation in self.mapView.annotations {
+//            self.mapView.removeAnnotation(annotation)
+//        }
+//    }
     
     
     func dropPins(_ ast:Asset)

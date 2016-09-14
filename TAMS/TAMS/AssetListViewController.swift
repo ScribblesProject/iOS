@@ -93,6 +93,7 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
         primaryLabel?.text = currentAsset.name
         secondaryLabel?.text = currentAsset.description
 
+        imageView?.image = UIImage()
         imageView?.loadUrl(currentAsset.imageUrl)
         imageView?.layer.borderColor = UIColor.black.cgColor
         imageView?.layer.borderWidth = 1.0
