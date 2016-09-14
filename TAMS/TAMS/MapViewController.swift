@@ -69,6 +69,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         switch viewMode {
         case .tab:
             updateForTab()
@@ -259,12 +260,8 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     
     func reload() {
         BackendAPI.list { (list) -> Void in
-            
-            let hasChanges = self.listDiffers(list)
-            
-            self.assets = list
-            
-            if hasChanges {
+            if self.listDiffers(list) {
+                self.assets = list
                 self.layoutAssets()
             }
         }
@@ -276,13 +273,6 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             dropPins(item)
         }
     }
-    
-    
-//    func removePins() {
-//        for annotation in self.mapView.annotations {
-//            self.mapView.removeAnnotation(annotation)
-//        }
-//    }
     
     
     func dropPins(_ ast:Asset)
