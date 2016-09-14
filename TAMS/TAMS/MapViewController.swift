@@ -49,6 +49,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     var assets = [Asset]()
     var selectPinLocations:[CLLocationCoordinate2D] = []
     var delegate:MapViewControllerProtocol?
+    var polylines:[NSNumber:MKPolyline] = [:] // [ Asset.id : MKPolygon ]
     
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -76,10 +77,16 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
 //            setupForSelect()
         }
     }
-    
-    override open func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+
+    open override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didSelectLocations(selectPinLocations)
     }
+    
+//    override open func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//    }
     
     //MARK: Setup
     
@@ -117,9 +124,15 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         reload()
     }
     
-    @IBAction func doneButtonPressed(_ sender: AnyObject) {
-        delegate?.didSelectLocations(selectPinLocations)
-        self.navigationController?.popViewController(animated: true)
+    @IBAction func resetButtonPressed(_ sender: AnyObject) {
+        for (_, polyline) in self.polylines {
+            self.mapView.remove(polyline)
+        }
+        
+        self.mapView.removeAnnotations(self.mapView.annotations)
+        
+        selectPinLocations = []
+        polylines = [:]
     }
     
     func setupForSelect() {
@@ -128,7 +141,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         
         //Add Tap Gesture Recognizer
         let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.handleSelectPin(_:)))
-        lpgr.minimumPressDuration = 1.0
+        lpgr.minimumPressDuration = 0.25
         self.mapView.addGestureRecognizer(lpgr)
     }
     
@@ -137,18 +150,24 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             return
         }
         
-        print("Dropping Pin")
-        
-        //Remove all pins
-        selectPinLocations = []
-        for pin in self.mapView.annotations {
-            self.mapView.removeAnnotation(pin)
-        }
-        
         let touchPoint = recognizer.location(in: self.mapView)
         let touchMapCoordinate = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
         
         selectPinLocations += [touchMapCoordinate]
+        
+        //A
+        if selectPinLocations.count > 1 {
+            let saveKey = NSNumber(value: 0)
+            
+            //Remove current
+            if let currentPolygon = polylines[saveKey] {
+                self.mapView.remove(currentPolygon)
+            }
+            
+            //Save the polygon
+            polylines[saveKey] = MKPolyline(coordinates: selectPinLocations + [selectPinLocations[0]], count: selectPinLocations.count+1)
+            self.mapView.add(polylines[saveKey]!)
+        }
         
         let point = MKPointAnnotation()
         point.coordinate = touchMapCoordinate
@@ -156,24 +175,29 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         self.mapView.addAnnotation(point)
     }
     
+    
     @IBAction func locateUser(_ sender: AnyObject) {
         if let loc = currentLocation {
             mapView.setCenter(loc.coordinate, animated: true)
         }
     }
     
+    
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //Setup mapview for initial ping
         if currentLocation == nil {
             mapView.showsUserLocation = true
+            mapView.setCenter(locations[0].coordinate, animated: true)
         }
         
         currentLocation = locations[0]
     }
     
+    
     open func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("LOCATION MANAGER ERROR: \(error)")
     }
+    
     
     //Check if given list differs from global asset list
     func listDiffers(_ list:[Asset])->Bool {
@@ -221,6 +245,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         return hasChanges
     }
     
+    
     open func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         for annView in views
         {
@@ -229,8 +254,6 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             UIView.animate(withDuration: 0.5, animations: { () -> Void in
                 annView.frame = endFrame
             })
-//            [UIView animateWithDuration:0.5
-//                animations:^{ annView.frame = endFrame; }];
         }
     }
     
@@ -254,15 +277,19 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         }
     }
     
+    
     func removePins() {
         for annotation in self.mapView.annotations {
             self.mapView.removeAnnotation(annotation)
         }
     }
     
+    
     func dropPins(_ ast:Asset)
     {
-        for (order, loc) in ast.locations {
+        setupPolygon(ast)
+        
+        for (_, loc) in ast.locations {
             let coord = CLLocationCoordinate2D(latitude: loc.latitude, longitude: loc.longitude)
             let point = MKPointAnnotation()
             point.coordinate = coord
@@ -270,6 +297,40 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             point.subtitle = ast.description
             self.mapView.addAnnotation(point)
         }
+    }
+    
+    
+    func setupPolygon(_ ast:Asset)
+    {
+        if ast.locations.count > 1 {
+            
+            //Remove current polygon
+            if let currentPolygon = polylines[ast.id] {
+                self.mapView.remove(currentPolygon)
+            }
+            
+            //Sort locations by order key
+            let locDictionaries = ast.locations.sorted(by: { (first, second) -> Bool in
+                return Int(first.key) < Int(second.key)
+            })
+            
+            //Add locations to array
+            let locs:[CLLocationCoordinate2D] = locDictionaries.map({ (item) -> CLLocationCoordinate2D in
+                return CLLocationCoordinate2D(latitude:item.value.latitude, longitude: item.value.longitude)
+            })
+            
+            //Save the polygon
+            polylines[ast.id] = MKPolyline(coordinates: locs + [locs[0]], count: locs.count+1)
+            self.mapView.add(polylines[ast.id]!)
+        }
+    }
+    
+    
+    public func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let lineView = MKPolylineRenderer(overlay: overlay)
+        lineView.strokeColor = UIColor.red
+        lineView.lineWidth = 5
+        return lineView
     }
     
 }

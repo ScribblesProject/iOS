@@ -298,10 +298,10 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             return
         }
         
-        var index = 0
+        var order = 0
         for loc in locations {
-            index += 1
-            self.locations[index] = Asset.LocationType(latitude: loc.latitude, longitude: loc.longitude)
+            order += 1
+            self.locations[order] = Asset.LocationType(latitude: loc.latitude, longitude: loc.longitude)
         }
         
         assetLocation.text = "\(locations.count) selected"
