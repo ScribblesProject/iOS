@@ -21,21 +21,30 @@ open class CategTypeViewController: UITableViewController {
     var assetTypeList:[Type] = []
     var assetCategoryList:[Category] = []
     
+    var typeCategory:Category?
+    
     public enum CategTypeViewType {
         case category, type
     }
     
-    open func setup(viewType vt:CategTypeViewType, delegate del:CategTypeViewControllerProtocol)
+    func setupTypeView(category:Category?, delegate:CategTypeViewControllerProtocol)
     {
-        viewType = vt
-        delegate = del
+        self.viewType = .type
+        self.typeCategory =  category
+        self.delegate = delegate
+    }
+    
+    func setupCategoryView(delegate:CategTypeViewControllerProtocol)
+    {
+        viewType = .category
+        self.delegate = delegate
     }
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if viewType == .type {
-            setupTypes()
+            setupTypes(category: typeCategory)
         }
         else if viewType == .category {
             setupCategories()
@@ -54,10 +63,15 @@ open class CategTypeViewController: UITableViewController {
         }
     }
     
-    open func setupTypes()
+    open func setupTypes(category:Category?)
     {
         self.title = "Select Type"
-        BackendAPI.typeList { (types) -> Void in
+        
+        if category == nil {
+            return
+        }
+        
+        BackendAPI.typeList(category: category!) { (types) -> Void in
             self.assetTypeList = types
             self.assetCategoryList = []
             self.tableView.reloadData()

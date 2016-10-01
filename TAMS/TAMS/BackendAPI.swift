@@ -230,9 +230,9 @@ class BackendAPI: NSObject {
     
 //MARK: Asset-Type Methods
     
-    class func typeList(_ completion:@escaping (([Type])->Void))
+    class func typeList(category:Category, _ completion:@escaping (([Type])->Void))
     {
-        let endpoint = "/api/asset/type/list/"
+        let endpoint = "/api/asset/type/list/\(category.id)/"
         print(BASE+endpoint)
         
         Alamofire.request(BASE+endpoint, method:.get)

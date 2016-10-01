@@ -16,7 +16,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     @IBOutlet var assetPhoto: UIImageView!
     @IBOutlet var assetName: UITextField!
     @IBOutlet var assetCategory: UILabel!
-    var assetCategoryDescription:String = ""
+    var assetCategoryObject:Category?
     @IBOutlet var assetType: UILabel!
     @IBOutlet var assetLocation: UILabel!
     @IBOutlet var memoRecordButton: UIButton!
@@ -51,7 +51,6 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     func setupView()
     {
         assetCategory.text = ""
-        assetCategoryDescription = ""
         assetType.text = ""
         assetLocation.text = ""
         
@@ -77,7 +76,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             description: assetDescription.text ?? "",
             type: assetType.text ?? "",
             category: assetCategory.text ?? "",
-            category_description: assetCategoryDescription,
+            category_description: assetCategoryObject?.description ?? "",
             imageUrl: "",
             voiceUrl: "",
             locations: self.locations
@@ -89,9 +88,9 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         
         switch segue.identifier ?? "" {
         case "pushSelectCategory":
-            (destination as! CategTypeViewController).setup(viewType: .category, delegate: self)
+            (destination as! CategTypeViewController).setupCategoryView(delegate: self)
         case "pushSelectType":
-            (destination as! CategTypeViewController).setup(viewType: .type, delegate: self)
+            (destination as! CategTypeViewController).setupTypeView(category: assetCategoryObject, delegate: self)
         case "pushSelectLocation":
             (destination as! MapViewController).setup(.select, delegate: self)
         default:
@@ -314,7 +313,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     func didSelectCategory(_ category:Category) {
         print("didSelectCategory with name: \(category)")
         assetCategory.text = category.name
-        assetCategoryDescription = category.description
+        assetCategoryObject = category
     }
     
     //MARK: Table View Delegate
