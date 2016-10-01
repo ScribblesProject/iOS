@@ -171,6 +171,8 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     
     func displayFilterNotice()
     {
+        hideFilterNotice()
+        
         filterNoticeView = UIView()
         filterNoticeView?.layer.cornerRadius = 22.0
         filterNoticeView?.layer.borderColor = UIColor.gray.cgColor
@@ -194,7 +196,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         filterNoticeView?.translatesAutoresizingMaskIntoConstraints = false
         views = ["view":filterNoticeView!, "guide":self.bottomLayoutGuide]
         vert = NSLayoutConstraint.constraints(withVisualFormat: "V:[view(44)]-20-[guide]", options: .init(rawValue: 0), metrics: nil, views: views)
-        horiz = NSLayoutConstraint.constraints(withVisualFormat: "H:[view(250)]", options: .init(rawValue: 0), metrics: nil, views: views)
+        horiz = NSLayoutConstraint.constraints(withVisualFormat: "H:[view(200)]", options: .init(rawValue: 0), metrics: nil, views: views)
         let centered = NSLayoutConstraint(item: filterNoticeView!, attribute: .centerX, relatedBy: .equal, toItem: filterNoticeView!.superview!, attribute: .centerX, multiplier: 1.0, constant: 0)
         self.view.addConstraints(vert + horiz + [centered])
     }

@@ -124,7 +124,7 @@ open class CategTypeViewController: UITableViewController {
                 }
                 let newCateg = Category(id: 0, name: nameField.text ?? "", description: descField.text ?? "")
                 self.delegate?.didSelectCategory(newCateg)
-                self.navigationController?.popViewController(animated: true)
+                _ = self.navigationController?.popViewController(animated: true)
                 
             case .type:
                 if nameField.text?.characters.count ?? 0 == 0 {
@@ -133,7 +133,7 @@ open class CategTypeViewController: UITableViewController {
                 }
                 let newType = Type(id: 0, name: nameField.text ?? "")
                 self.delegate?.didSelectType(newType)
-                self.navigationController?.popViewController(animated: true)
+                _ = self.navigationController?.popViewController(animated: true)
             }
         }
         alert.addAction(okButton)
@@ -174,12 +174,12 @@ open class CategTypeViewController: UITableViewController {
         case .category:
             let currentCateg = assetCategoryList[(indexPath as NSIndexPath).row]
             delegate?.didSelectCategory(currentCateg)
-            self.navigationController?.popViewController(animated: true)
+            _ = self.navigationController?.popViewController(animated: true)
             
         case .type:
             let currentType = assetTypeList[(indexPath as NSIndexPath).row]
             delegate?.didSelectType(currentType)
-            self.navigationController?.popViewController(animated: true)
+            _ = self.navigationController?.popViewController(animated: true)
         }
     }
 }

@@ -150,6 +150,7 @@ class FilterTableViewController: UITableViewController {
             
             destination.prepareView(selectionHandler: { (category) in
                 self.selectedCategory = category
+                self.selectedType = nil
                 self.tableView.reloadData()
             })
         }

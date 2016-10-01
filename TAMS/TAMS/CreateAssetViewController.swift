@@ -314,6 +314,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         print("didSelectCategory with name: \(category)")
         assetCategory.text = category.name
         assetCategoryObject = category
+        assetType.text = ""
     }
     
     //MARK: Table View Delegate
