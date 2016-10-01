@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E154AD71DA05E9B002C2141 /* FilterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E154AD61DA05E9B002C2141 /* FilterTableViewController.swift */; };
 		2E1B94821C9BBFB5006AA4BC /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E1B94801C9BBFB5006AA4BC /* arrow.png */; };
 		2E1B94831C9BBFB5006AA4BC /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E1B94811C9BBFB5006AA4BC /* arrow@2x.png */; };
 		2E1B94851C9BCBE6006AA4BC /* CategTypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */; };
 		2E1F44E61C9A824D00815D4B /* AssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1F44E51C9A824D00815D4B /* AssetListViewController.swift */; };
 		2E1F44E81C9A878000815D4B /* BackendAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E1F44E71C9A878000815D4B /* BackendAPI.swift */; };
 		2E20A9AE1C9B383B00CE8824 /* CreateAssetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */; };
+		2E4D7ADB1DA06F5C00B85928 /* FilterCategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4D7ADA1DA06F5C00B85928 /* FilterCategoryTableViewController.swift */; };
+		2E4D7ADD1DA06F6600B85928 /* FilterTypeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4D7ADC1DA06F6600B85928 /* FilterTypeTableViewController.swift */; };
 		2E5A08FE1C9B806100FEA99E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5A08FD1C9B806100FEA99E /* MapViewController.swift */; };
 		2E5A09001C9B969B00FEA99E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E5A08FF1C9B969B00FEA99E /* CoreLocation.framework */; };
 		2E61BC171C9CAF1B0011D664 /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E61BC161C9CAF1B0011D664 /* PhotoPicker.swift */; };
@@ -59,12 +62,15 @@
 /* Begin PBXFileReference section */
 		110282D8BCC015A28AD3FC7F /* Pods-TAMSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TAMSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TAMSTests/Pods-TAMSTests.release.xcconfig"; sourceTree = "<group>"; };
 		1B488A50EAC07D2BD19B398D /* Pods-TAMSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TAMSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TAMSTests/Pods-TAMSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2E154AD61DA05E9B002C2141 /* FilterTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTableViewController.swift; sourceTree = "<group>"; };
 		2E1B94801C9BBFB5006AA4BC /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		2E1B94811C9BBFB5006AA4BC /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
 		2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategTypeViewController.swift; sourceTree = "<group>"; };
 		2E1F44E51C9A824D00815D4B /* AssetListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetListViewController.swift; sourceTree = "<group>"; };
 		2E1F44E71C9A878000815D4B /* BackendAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackendAPI.swift; sourceTree = "<group>"; };
 		2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAssetViewController.swift; sourceTree = "<group>"; };
+		2E4D7ADA1DA06F5C00B85928 /* FilterCategoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterCategoryTableViewController.swift; sourceTree = "<group>"; };
+		2E4D7ADC1DA06F6600B85928 /* FilterTypeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterTypeTableViewController.swift; sourceTree = "<group>"; };
 		2E5A08FD1C9B806100FEA99E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		2E5A08FF1C9B969B00FEA99E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		2E61BC161C9CAF1B0011D664 /* PhotoPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
@@ -204,6 +210,9 @@
 				2EC4056C1C9AA35B0028D3FD /* database */,
 				2EC4056A1C9AA30D0028D3FD /* ui elements */,
 				2EFE3E941C99FD2D009CBF6D /* Main.storyboard */,
+				2E154AD61DA05E9B002C2141 /* FilterTableViewController.swift */,
+				2E4D7ADA1DA06F5C00B85928 /* FilterCategoryTableViewController.swift */,
+				2E4D7ADC1DA06F6600B85928 /* FilterTypeTableViewController.swift */,
 				2E1B94841C9BCBE6006AA4BC /* CategTypeViewController.swift */,
 				2E20A9AD1C9B383B00CE8824 /* CreateAssetViewController.swift */,
 				2E61BC181C9CCC420011D664 /* VoiceMemoRecorder.swift */,
@@ -477,9 +486,12 @@
 				2E1B94851C9BCBE6006AA4BC /* CategTypeViewController.swift in Sources */,
 				2E1F44E81C9A878000815D4B /* BackendAPI.swift in Sources */,
 				2EFE3E931C99FD2D009CBF6D /* InitialTabBarController.swift in Sources */,
+				2E4D7ADB1DA06F5C00B85928 /* FilterCategoryTableViewController.swift in Sources */,
+				2E4D7ADD1DA06F6600B85928 /* FilterTypeTableViewController.swift in Sources */,
 				2EFE3E911C99FD2D009CBF6D /* AppDelegate.swift in Sources */,
 				2EFE3E991C99FD2D009CBF6D /* TAMS.xcdatamodeld in Sources */,
 				2E61BC191C9CCC420011D664 /* VoiceMemoRecorder.swift in Sources */,
+				2E154AD71DA05E9B002C2141 /* FilterTableViewController.swift in Sources */,
 				2E1F44E61C9A824D00815D4B /* AssetListViewController.swift in Sources */,
 				2E20A9AE1C9B383B00CE8824 /* CreateAssetViewController.swift in Sources */,
 				2E61BC171C9CAF1B0011D664 /* PhotoPicker.swift in Sources */,
