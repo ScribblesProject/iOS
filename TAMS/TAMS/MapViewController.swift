@@ -121,7 +121,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         filteredAssets = assets.filter({ (asset) -> Bool in
             if category != nil
             {
-                if asset.category != category!.name {
+                if asset.category.name != category!.name {
                     return false
                 }
             }

@@ -123,7 +123,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="ubg-Xo-LRH">
                             <connections>
-                                <segue destination="gNy-7S-pwu" kind="show" id="eW0-8d-65d"/>
+                                <segue destination="gNy-7S-pwu" kind="show" identifier="updateCreateAsset" id="eW0-8d-65d"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -551,7 +551,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rHU-tq-jCV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3254" y="18"/>
+            <point key="canvasLocation" x="3316" y="28"/>
         </scene>
         <!--Asset Map-->
         <scene sceneID="7fN-dk-qmN">

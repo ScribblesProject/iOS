@@ -17,8 +17,7 @@ public struct Asset {
     var name:String
     var description:String
     var type:String
-    var category:String
-    var category_description:String
+    var category:Category
     var imageUrl:String
     var voiceUrl:String
     
@@ -40,7 +39,8 @@ public struct Asset {
         result["name"] = name as AnyObject?
         result["description"] = description as AnyObject?
         result["category"] = category as AnyObject?
-        result["category-description"] = category_description as AnyObject?
+        result["category-id"] = category.id as AnyObject?
+        result["category-description"] = category.description as AnyObject?
         result["type-name"] = type as AnyObject?
         
         var locDic = [String:[String:Any]]()
@@ -95,6 +95,7 @@ class BackendAPI: NSObject {
         let voiceUrl        = JSON["media-voice-url"] as! String
         let locations       = JSON["locations"] as! [String:[String:Any]]
         let category        = JSON["category"] as! String
+        let category_id     = JSON["category-id"] as! NSNumber
         let category_desc   = JSON["category-description"] as! String
         let type            = JSON["asset-type"] as! String
         
@@ -112,8 +113,7 @@ class BackendAPI: NSObject {
             name: name,
             description: description,
             type: type,
-            category: category,
-            category_description: category_desc,
+            category: Category(id: category_id, name: category, description: category_desc),
             imageUrl: imageUrl,
             voiceUrl: voiceUrl,
             locations: locDic as! [Int : Asset.LocationType]

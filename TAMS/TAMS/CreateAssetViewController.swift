@@ -8,29 +8,32 @@
 
 import UIKit
 import SVProgressHUD
+import Alamofire
 import MapKit
 
 class CreateAssetViewController: UITableViewController, CategTypeViewControllerProtocol, MapViewControllerProtocol {
+    
+    var updateAsset:Asset?
     
     @IBOutlet var addPhotoButton: UIButton!
     @IBOutlet var assetPhoto: UIImageView!
     @IBOutlet var assetName: UITextField!
     @IBOutlet var assetCategory: UILabel!
-    var assetCategoryObject:Category?
     @IBOutlet var assetType: UILabel!
     @IBOutlet var assetLocation: UILabel!
+    @IBOutlet var assetDescription: UITextView!
     @IBOutlet var memoRecordButton: UIButton!
     @IBOutlet var memoPlayButton: UIButton!
     @IBOutlet var memoDeleteButton: UIButton!
     @IBOutlet var memoProgressSlider: UISlider!
-    @IBOutlet var assetDescription: UITextView!
     var keyboardShowing = false
     
-//    var assetLongitude:Double = 0.0
-//    var assetLatitude:Double = 0.0
+    var assetCategoryObject:Category?
     var locations:[Int:Asset.LocationType] = [:]
     var assetImage:UIImage?
     var assetMemoURL:URL?
+    
+    typealias createAssetCompletionHandler = ((_ success:Bool, _ imageUploaded:Bool, _ memoUploaded:Bool)->Void)
     
     //MARK: -
     
@@ -41,11 +44,63 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupView()
+        if updateAsset == nil {
+            setupView()
+        }
+        else {
+            setupViewForUpdate()
+        }
 
         NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.addObserver(self, selector: #selector(CreateAssetViewController.keboardDidShow(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(CreateAssetViewController.keboardDidHide(_:)), name: NSNotification.Name.UIKeyboardDidHide, object: nil)
+    }
+    
+    func prepareUpdate(asset:Asset)
+    {
+        updateAsset = asset
+    }
+    
+    func setupViewForUpdate()
+    {
+        //Recorder
+        memoPlayButton.isHidden = true
+        memoDeleteButton.isHidden = true
+        memoProgressSlider.isHidden = true
+        
+        if let asset = updateAsset {
+            assetName.text = asset.name
+            assetCategory.text = asset.category.name
+            assetType.text = asset.type
+            assetDescription.text = asset.description
+            
+            if asset.locations.count > 0 {
+                assetLocation.text = "\(asset.locations.count) selected"
+            }
+            
+            locations = asset.locations
+            assetCategoryObject = asset.category
+            
+            if asset.voiceUrl.characters.count == 0 {
+                //Recorder
+                memoRecordButton.isHidden = true
+                memoPlayButton.isHidden = false
+                memoDeleteButton.isHidden = false
+                memoProgressSlider.isHidden = false
+            }
+            
+            //Load Image
+            let imageUrl = asset.imageUrl
+            Alamofire.request(imageUrl, method:.get).validate().response { response in
+                if let data = response.data {
+                    let image = UIImage(data: data)
+                    self.assetPhoto.image = image
+                }
+            }
+        }
+        else {
+             _ = self.navigationController?.popViewController(animated: true)
+        }
     }
     
     func setupView()
@@ -70,17 +125,26 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
 
     func formatAsset()->Asset
     {
-        return Asset(
-            id: 0,
-            name: assetName.text ?? "",
-            description: assetDescription.text ?? "",
-            type: assetType.text ?? "",
-            category: assetCategory.text ?? "",
-            category_description: assetCategoryObject?.description ?? "",
-            imageUrl: "",
-            voiceUrl: "",
-            locations: self.locations
-        )
+        let imageUrl = updateAsset?.imageUrl ?? ""
+        var voiceUrl = updateAsset?.voiceUrl ?? ""
+        if assetMemoURL != nil {
+            voiceUrl = ""
+        }
+        
+        let category = Category(id: (updateAsset?.category.id ?? NSNumber(value:0)),
+                                name: assetCategory.text ?? "",
+                                description: assetCategoryObject?.description ?? "")
+        
+        let asset = Asset(id: (updateAsset?.id ?? NSNumber(value:0)),
+                          name: assetName.text ?? "",
+                          description: assetDescription.text ?? "",
+                          type: assetType.text ?? "",
+                          category: category,
+                          imageUrl: imageUrl,
+                          voiceUrl: voiceUrl,
+                          locations: self.locations)
+        
+        return asset
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -98,6 +162,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
     }
     
+    //MARK: -
     //MARK: Button Actions
     
     @IBAction func doneButtonPress(_ sender: AnyObject) {
@@ -108,16 +173,16 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         
         let newAsset = formatAsset()
         
-        createAsset(newAsset) { (success, imageUploaded, memoUploaded) -> Void in
+        updateCreateAsset(newAsset) { (success, imageUploaded, memoUploaded) -> Void in
             if success {
                 DispatchQueue.main.async(execute: { () -> Void in
-                    SVProgressHUD.showSuccess(withStatus: "Successfully Created Asset!", maskType: .black)
+                    SVProgressHUD.showSuccess(withStatus: "Successfully Created Asset!")
                     Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
                 })
             }
             else {
                 DispatchQueue.main.async(execute: { () -> Void in
-                    SVProgressHUD.showError(withStatus: "Failed To Created Asset!", maskType: .black)
+                    SVProgressHUD.showError(withStatus: "Failed To Created Asset!")
                     sleep(2)
                     _ = self.navigationController?.popViewController(animated: true)
                     Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
@@ -131,19 +196,30 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         _ = self.navigationController?.popViewController(animated: true)
     }
     
-    typealias createAssetCompletionHandler = ((_ success:Bool, _ imageUploaded:Bool, _ memoUploaded:Bool)->Void)
-    
-    func createAsset(_ asset:Asset, completion:@escaping createAssetCompletionHandler) {
+    func updateCreateAsset(_ asset:Asset, completion:@escaping createAssetCompletionHandler) {
         DispatchQueue.main.async(execute: { () -> Void in
-            SVProgressHUD.show(withStatus: "Creating Asset", maskType: .black)
+            SVProgressHUD.show(withStatus: "Creating Asset")
         })
-        BackendAPI.create(asset) { (success, assetId) -> Void in
+        
+        //do this after asset update/creation
+        let assetCreatedBlock:((Bool, NSNumber) -> Void) = { (success, assetId) -> Void in
             if success {
                 self.uploadMedia(assetId, completion: completion)
             }
             else {
                 completion(false, false, false)
             }
+        }
+        
+        //Perform Create/Update
+        if self.updateAsset == nil {
+            BackendAPI.create(asset, completion: assetCreatedBlock)
+        }
+        else {
+            DispatchQueue.main.async(execute: { () -> Void in
+                //UPDATE
+                SVProgressHUD.showError(withStatus: "NOT IMPLEMENTED")
+            })
         }
     }
     
@@ -153,7 +229,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         if let img = self.assetImage {
             //Upload Image
             DispatchQueue.main.async(execute: { () -> Void in
-                SVProgressHUD.show(withStatus: "Uploading Asset Image", maskType: .black)
+                SVProgressHUD.show(withStatus: "Uploading Asset Image")
             })
             BackendAPI.uploadImage(img, assetId: assetId, progress: { (percent) -> Void in
             }, completion: { (success) -> Void in
@@ -174,7 +250,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     func uploadMediaMemo(_ assetId:NSNumber, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler) {
         if let fileUrl = assetMemoURL {
             DispatchQueue.main.async(execute: { () -> Void in
-                SVProgressHUD.show(withStatus: "Uploading Asset Memo", maskType: .black)
+                SVProgressHUD.show(withStatus: "Uploading Asset Memo")
             })
             BackendAPI.uploadMemo(fileUrl, assetId: assetId, progress: { (percent) -> Void in
             }, completion: { (success) -> Void in
@@ -289,6 +365,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         self.present(alert, animated: true, completion: nil)
     }
     
+    //MARK: -
     //MARK: Field Callbacks
     
     func didSelectLocations(_ locations: [CLLocationCoordinate2D]) {
@@ -317,6 +394,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         assetType.text = ""
     }
     
+    //MARK: -
     //MARK: Table View Delegate
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {

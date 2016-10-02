@@ -57,17 +57,17 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
         let deleteActionButton: UIAlertAction = UIAlertAction(title: "Delete Asset", style: .destructive) { action -> Void in
             print("Deleting...")
             let currentAsset = self.assets[(indexPath as NSIndexPath).row]
-            SVProgressHUD.show(withStatus: "Deleting Asset", maskType: .black)
+            SVProgressHUD.show(withStatus: "Deleting Asset")
             BackendAPI.delete(currentAsset, completion: { (success) -> Void in
                 if success {
-                    SVProgressHUD.showSuccess(withStatus: "Succesfully Deleted Asset", maskType: .black)
+                    SVProgressHUD.showSuccess(withStatus: "Succesfully Deleted Asset")
                 }
                 else {
-                    SVProgressHUD.showError(withStatus: "Failed To Delete Asset", maskType: .black)
+                    SVProgressHUD.showError(withStatus: "Failed To Delete Asset")
                 }
                 self.assets.remove(at: (indexPath as NSIndexPath).row)
                 self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-                Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: "reload", userInfo: nil, repeats: false)
+                Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.reload), userInfo: nil, repeats: false)
             })
         }
         actionSheet.addAction(deleteActionButton)
@@ -101,7 +101,26 @@ class AssetListViewController: UIViewController, UITableViewDataSource, UITableV
         return cell!
     }
     
+    var selectedIndexPath:IndexPath?
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        //nillified after prepare(for segue:,sender:)
+        self.selectedIndexPath = indexPath
+        
+        self.performSegue(withIdentifier: "updateCreateAsset", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "updateCreateAsset" && selectedIndexPath != nil
+        {
+            let destination = segue.destination as! CreateAssetViewController
+            
+            let asset = assets[selectedIndexPath!.row]
+            destination.prepareUpdate(asset: asset)
+            
+            selectedIndexPath = nil
+        }
     }
 }
