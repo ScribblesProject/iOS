@@ -38,7 +38,7 @@ public struct Asset {
         result["id"] = id as AnyObject?
         result["name"] = name as AnyObject?
         result["description"] = description as AnyObject?
-        result["category"] = category as AnyObject?
+        result["category"] = category.name as AnyObject?
         result["category-id"] = category.id as AnyObject?
         result["category-description"] = category.description as AnyObject?
         result["type-name"] = type as AnyObject?
@@ -199,7 +199,7 @@ class BackendAPI: NSObject {
         let parameters = newAsset.formatDictionary()
         let url = BASE+endpoint
         
-        print(parameters)
+        print("Printing Parameters: ", parameters)
 
         Alamofire.request(url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: nil)
         .validate()

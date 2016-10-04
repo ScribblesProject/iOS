@@ -64,9 +64,7 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     func setupViewForUpdate()
     {
         //Recorder
-        memoPlayButton.isHidden = true
-        memoDeleteButton.isHidden = true
-        memoProgressSlider.isHidden = true
+        hideMemoPlayer()
         
         if let asset = updateAsset {
             assetName.text = asset.name
@@ -81,12 +79,11 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             locations = asset.locations
             assetCategoryObject = asset.category
             
-            if asset.voiceUrl.characters.count == 0 {
-                //Recorder
-                memoRecordButton.isHidden = true
-                memoPlayButton.isHidden = false
-                memoDeleteButton.isHidden = false
-                memoProgressSlider.isHidden = false
+            if asset.voiceUrl.characters.count != 0 {
+                showMemoPlayer()
+            }
+            else {
+                hideMemoPlayer()
             }
             
             //Load Image
@@ -110,6 +107,20 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         assetLocation.text = ""
         
         //Recorder
+        hideMemoPlayer()
+    }
+    
+    func showMemoPlayer()
+    {
+        memoRecordButton.isHidden = true
+        memoPlayButton.isHidden = false
+        memoDeleteButton.isHidden = false
+        memoProgressSlider.isHidden = false
+    }
+    
+    func hideMemoPlayer()
+    {
+        memoRecordButton.isHidden = false
         memoPlayButton.isHidden = true
         memoDeleteButton.isHidden = true
         memoProgressSlider.isHidden = true
@@ -301,12 +312,9 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
             let fileURL = VoiceMemoRecorder.sharedInstance().stopRecorder()
             assetMemoURL = fileURL as URL
             
-            self.memoRecordButton.isHidden = true
             self.memoRecordButton.setImage(UIImage(named: "record.png"), for: UIControlState())
             self.memoRecordButton.titleLabel?.text = "Record Voice Memo"
-            self.memoPlayButton.isHidden = false
-            self.memoDeleteButton.isHidden = false
-            self.memoProgressSlider.isHidden = false
+            showMemoPlayer()
         }
         else {
             VoiceMemoRecorder.sharedInstance().recordAudio { (success) -> Void in
@@ -323,42 +331,75 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     }
     
     @IBAction func memoPlayButtonPress(_ sender: AnyObject) {
-        if VoiceMemoRecorder.sharedInstance().playing()
+        if MemoPlayer.shared.playing
         {
-            VoiceMemoRecorder.sharedInstance().pause()
+            //Pause Pressed
+            MemoPlayer.shared.pause()
         }
         else {
+            //Play Pressed
             self.memoProgressSlider.maximumValue = 1.0
-            VoiceMemoRecorder.sharedInstance().play({ (progress, playing, finished) -> Void in
-                if !playing || finished {
-                    self.memoPlayButton.setImage(UIImage(named: "play.png"), for: UIControlState())
-                }
-                else {
-                    self.memoPlayButton.setImage(UIImage(named: "pause.png"), for: UIControlState())
-                }
-                
-                if finished {
-                    self.memoProgressSlider.value = 1.0
-                }
-                else {
-                    self.memoProgressSlider.value = Float(progress)
-                }
-                
-                print("Progress: \(self.memoProgressSlider.value)")
+            
+            if assetMemoURL == nil && self.updateAsset?.voiceUrl.characters.count ?? 0 == 0 {
+                presentError("Playback Error.")
+                hideMemoPlayer()
+                return
+            }
+            
+            if assetMemoURL == nil
+            {
+                let url = self.updateAsset!.voiceUrl
+                MemoPlayer.shared.play(remoteUrl:url, { (progress, state, error) -> Void in
+                    self.handlePlaybackChange(progress: progress, state:state, error: error)
+                })
+                return
+            }
+            
+            MemoPlayer.shared.play(localUrl:assetMemoURL!, { (progress, state, error) -> Void in
+                self.handlePlaybackChange(progress: progress, state:state, error: error)
             })
         }
     }
     
+    func handlePlaybackChange(progress:Double, state:MemoPlayer.MemoPlayerState, error:Error?)
+    {
+        print("Playback State: " + state.description())
+        
+        if state != .Playing {
+            self.memoPlayButton.setImage(UIImage(named: "play.png"), for: UIControlState())
+        }
+        else {
+            self.memoPlayButton.setImage(UIImage(named: "pause.png"), for: UIControlState())
+        }
+        
+        if state == .Finished {
+            self.memoProgressSlider.value = 1.0
+        }
+        else if state == .Loading || state == .Unknown {
+            self.memoProgressSlider.value = 0.0
+        }
+        else {
+            self.memoProgressSlider.value = Float(progress)
+        }
+        
+        print("Progress: \(self.memoProgressSlider.value)")
+    }
+    
     @IBAction func memoDeleteButtonPress(_ sender: AnyObject) {
-        let alert = UIAlertController(title: "Are You Sure?", message: "This will erase your current recording. This action is not recoverable.", preferredStyle: .alert)
+        var message:String
+        if assetMemoURL == nil {
+            message = "This will erase your current recording.\n\nNote: Since this memo is stored on the server, changes wont take affect until you save."
+        }
+        else {
+            message = "This will erase your current recording. This action is not recoverable."
+        }
+        
+        let alert = UIAlertController(title: "Are You Sure?", message: message, preferredStyle: .alert)
         let cancelButton = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
         let deleteButton = UIAlertAction(title: "Delete", style: UIAlertActionStyle.destructive) { (action) -> Void in
             VoiceMemoRecorder.sharedInstance().deleteRecording()
             self.memoProgressSlider.value = 0.0
-            self.memoPlayButton.isHidden = true
-            self.memoDeleteButton.isHidden = true
-            self.memoProgressSlider.isHidden = true
-            self.memoRecordButton.isHidden = false
+            self.hideMemoPlayer()
         }
         alert.addAction(cancelButton)
         alert.addAction(deleteButton)
