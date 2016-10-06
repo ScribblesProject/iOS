@@ -296,9 +296,24 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     //MARK: -
     //MARK: Setup
     
-    open func setup(_ mode:MapViewMode, delegate del:MapViewControllerProtocol) {
-        viewMode = mode
-        delegate = del
+    func setupTab(delegate:MapViewControllerProtocol) {
+        self.viewMode = .tab
+        self.delegate = delegate
+    }
+    
+    func setupAssetSelect(locations:[Int:Asset.LocationType]? = nil, delegate:MapViewControllerProtocol) {
+        self.viewMode = .select
+        self.delegate = delegate
+        
+        if locations != nil {
+            let locArray = locations!.sorted { (itemA, itemB) -> Bool in
+                return itemA.key < itemB.key
+            }
+            
+            self.selectPinLocations = locArray.map({ (item) -> CLLocationCoordinate2D in
+                return CLLocationCoordinate2D(latitude: item.value.latitude, longitude: item.value.longitude)
+            })
+        }
     }
     
     func startUpdatingLocation() {
@@ -318,14 +333,14 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         self.mapView.setRegion(region, animated: false)
     }
     
-    func setupForTab() {
+    private func setupForTab() {
         //Remove the "Done" button from toolbar
         if self.navigationItem.rightBarButtonItems?.count > 1 {
             self.navigationItem.rightBarButtonItems?.remove(at: 0)
         }
     }
     
-    func setupForSelect() {
+    private func setupForSelect() {
         self.navigationItem.leftBarButtonItem = nil
         self.title = "Select Location"
         
@@ -333,6 +348,19 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(MapViewController.handleSelectPin(_:)))
         lpgr.minimumPressDuration = 0.25
         self.mapView.addGestureRecognizer(lpgr)
+        
+        
+        for (_, polyline) in self.polylines {
+            self.mapView.remove(polyline)
+        }
+        self.mapView.removeAnnotations(self.mapView.annotations)
+        for loc in self.selectPinLocations {
+            addDroppedCoordinate(coord: loc)
+        }
+        
+        if self.selectPinLocations.count > 0 {
+            self.mapView.setCenter(self.selectPinLocations[0], animated: true)
+        }
     }
     
     func updateForTab() {
@@ -367,9 +395,14 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         
         let touchPoint = recognizer.location(in: self.mapView)
         let touchMapCoordinate = self.mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
-        
+
         selectPinLocations += [touchMapCoordinate]
         
+        addDroppedCoordinate(coord: touchMapCoordinate)
+    }
+    
+    func addDroppedCoordinate(coord:CLLocationCoordinate2D)
+    {
         //A
         if selectPinLocations.count > 1 {
             let saveKey = NSNumber(value: 0)
@@ -385,7 +418,7 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         }
         
         let point = MKPointAnnotation()
-        point.coordinate = touchMapCoordinate
+        point.coordinate = coord
         point.title = "Dropped Pin"
         self.mapView.addAnnotation(point)
     }
@@ -396,8 +429,10 @@ open class MapViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     open func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //Setup mapview for initial ping
         if currentLocation == nil {
-            mapView.showsUserLocation = true
-            mapView.setCenter(locations[0].coordinate, animated: true)
+            if selectPinLocations.count == 0 && assets.count == 0 {
+                mapView.showsUserLocation = true
+                mapView.setCenter(locations[0].coordinate, animated: true)
+            }
         }
         
         currentLocation = locations[0]

@@ -28,6 +28,12 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     @IBOutlet var memoProgressSlider: UISlider!
     var keyboardShowing = false
     
+    var assetImageModified:Bool {
+        get { return (assetImage != nil) }
+    }
+    var assetMemoModified:Bool {
+        get { return (assetMemoURL != nil) }
+    }
     var assetCategoryObject:Category?
     var locations:[Int:Asset.LocationType] = [:]
     var assetImage:UIImage?
@@ -164,10 +170,13 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         switch segue.identifier ?? "" {
         case "pushSelectCategory":
             (destination as! CategTypeViewController).setupCategoryView(delegate: self)
+            break
         case "pushSelectType":
             (destination as! CategTypeViewController).setupTypeView(category: assetCategoryObject, delegate: self)
+            break
         case "pushSelectLocation":
-            (destination as! MapViewController).setup(.select, delegate: self)
+            (destination as! MapViewController).setupAssetSelect(locations:self.locations, delegate: self)
+            break
         default:
             break
         }
@@ -223,20 +232,28 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         }
         
         //Perform Create/Update
-        if self.updateAsset == nil {
+        if self.updateAsset == nil
+        {
             BackendAPI.create(asset, completion: assetCreatedBlock)
         }
-        else {
-            DispatchQueue.main.async(execute: { () -> Void in
-                //UPDATE
-                SVProgressHUD.showError(withStatus: "NOT IMPLEMENTED")
-            })
+        else if let oldAsset = self.updateAsset
+        {
+            if oldAsset.differsFrom(asset: asset) {
+                BackendAPI.update(asset, completion: { (success) in
+                    assetCreatedBlock(success, asset.id)
+                })
+            }
+            else {
+                assetCreatedBlock(true, oldAsset.id)
+            }
         }
     }
     
     
     func uploadMedia(_ assetId:NSNumber, completion:@escaping createAssetCompletionHandler)
     {
+        //No difference between update/create here
+        
         if let img = self.assetImage {
             //Upload Image
             DispatchQueue.main.async(execute: { () -> Void in
@@ -258,7 +275,10 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     }
     
     
-    func uploadMediaMemo(_ assetId:NSNumber, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler) {
+    func uploadMediaMemo(_ assetId:NSNumber, imageUploaded:Bool, completion:@escaping createAssetCompletionHandler)
+    {
+        //No difference between update/create here
+        
         if let fileUrl = assetMemoURL {
             DispatchQueue.main.async(execute: { () -> Void in
                 SVProgressHUD.show(withStatus: "Uploading Asset Memo")
@@ -414,6 +434,8 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         if locations.count == 0 {
             return
         }
+        
+        self.locations = [:]
         
         var order = 0
         for loc in locations {

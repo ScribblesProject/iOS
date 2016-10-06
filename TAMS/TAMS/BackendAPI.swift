@@ -55,6 +55,38 @@ public struct Asset {
         
         return result
     }
+    
+    /// Does not check against IDs
+    func differsFrom(asset:Asset) -> Bool
+    {
+        if self.name != asset.name
+            || self.description != asset.description
+            || self.category.name != asset.category.name
+            || self.category.description != asset.category.description
+            || self.type != asset.type
+        {
+            return true
+        }
+        
+        if self.locations.count != asset.locations.count {
+            return true
+        }
+        
+        for (key,loc) in self.locations
+        {
+            if asset.locations[key] == nil {
+                return true
+            }
+            
+            if loc.latitude != asset.locations[key]!.latitude
+                || loc.longitude != asset.locations[key]!.longitude
+            {
+                return true
+            }
+        }
+        
+        return false
+    }
 }
 
 public struct Type {
@@ -225,6 +257,43 @@ class BackendAPI: NSObject {
                 return
             }
             completion(false, 0)
+        }
+    }
+    
+    class func update(_ asset:Asset, completion:@escaping ((_ success:Bool)->Void))
+    {
+        let endpoint = "/api/asset/update/\(asset.id)/"
+        print(BASE+endpoint)
+        
+        let parameters = asset.formatDictionary()
+        let url = BASE+endpoint
+        
+        print("Printing Parameters: ", parameters)
+        
+        Alamofire.request(url, method: .put, parameters: parameters, encoding: JSONEncoding.default, headers: nil)
+            .validate()
+            .responseJSON { (response) in
+                switch response.result {
+                case .success:
+                    if let JSON = response.result.value as? [String:Any] {
+                        print("RESPONSE: \(JSON)")
+                        let success:Bool = JSON["success"] as? Bool ?? false
+//                        let assetId:NSNumber = JSON["id"] as! NSNumber
+                        
+//                        print(assetId)
+                        
+                        if success {
+                            completion(true)
+                            return
+                        }
+                    }
+                    break
+                case .failure:
+                    printResponse(response)
+                    completion(false)
+                    return
+                }
+                completion(false)
         }
     }
     
