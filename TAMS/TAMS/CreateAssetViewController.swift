@@ -196,13 +196,23 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
         updateCreateAsset(newAsset) { (success, imageUploaded, memoUploaded) -> Void in
             if success {
                 DispatchQueue.main.async(execute: { () -> Void in
-                    SVProgressHUD.showSuccess(withStatus: "Successfully Created Asset!")
+                    if self.updateAsset == nil {
+                        SVProgressHUD.showSuccess(withStatus: "Successfully Created Asset!")
+                    }
+                    else {
+                        SVProgressHUD.showSuccess(withStatus: "Successfully Updated Asset!")
+                    }
                     Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
                 })
             }
             else {
                 DispatchQueue.main.async(execute: { () -> Void in
-                    SVProgressHUD.showError(withStatus: "Failed To Created Asset!")
+                    if self.updateAsset == nil {
+                        SVProgressHUD.showError(withStatus: "Failed To Created Asset!")
+                    }
+                    else {
+                        SVProgressHUD.showError(withStatus: "Failed To Update Asset!")
+                    }
                     sleep(2)
                     _ = self.navigationController?.popViewController(animated: true)
                     Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(CreateAssetViewController.popView), userInfo: nil, repeats: false)
@@ -218,7 +228,12 @@ class CreateAssetViewController: UITableViewController, CategTypeViewControllerP
     
     func updateCreateAsset(_ asset:Asset, completion:@escaping createAssetCompletionHandler) {
         DispatchQueue.main.async(execute: { () -> Void in
-            SVProgressHUD.show(withStatus: "Creating Asset")
+            if self.updateAsset == nil {
+                SVProgressHUD.show(withStatus: "Creating Asset")
+            }
+            else {
+                SVProgressHUD.show(withStatus: "Updating Asset")
+            }
         })
         
         //do this after asset update/creation
