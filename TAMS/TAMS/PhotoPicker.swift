@@ -18,24 +18,40 @@ open class PhotoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationC
     fileprivate var photoHandler:PhotoCompletionHandler?
     fileprivate var memoHandler:MemoCompletionHandler?
     fileprivate var viewController:UIViewController?
-    fileprivate var imagePickerController:UIImagePickerController?
+    fileprivate var imagePickerController:UIImagePickerController!
+    fileprivate var cameraController:UIImagePickerController!
     
     open class func sharedInstance()->PhotoPicker {
         return _sharedInstance
     }
     
+    override init() {
+        super.init()
+        
+        self.imagePickerController = UIImagePickerController()
+        self.imagePickerController.sourceType = .photoLibrary;
+        self.imagePickerController.delegate = self;
+        self.imagePickerController.loadView()
+        
+        self.cameraController = UIImagePickerController()
+        self.cameraController.delegate = self;
+        self.cameraController.allowsEditing = true
+        self.cameraController.sourceType = .camera;
+        self.cameraController.loadView()
+    }
+    
     open func requestPhoto(viewController vc:UIViewController, completion:@escaping PhotoCompletionHandler)
-    {
+    {   
         photoHandler = completion
         viewController = vc
         
         let alert = UIAlertController(title: "Select Image", message: "What would you like to do?", preferredStyle: .actionSheet)
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         let takePhotoButton = UIAlertAction(title: "Take Photo", style: .default) { (action) -> Void in
-            self.photoFromCamera()
+            self.photoFromCamera(alert)
         }
         let selectPhotoButton = UIAlertAction(title: "Choose From Library", style: .default) { (action) -> Void in
-            self.photoFromLibrary()
+            self.photoFromLibrary(alert)
         }
         alert.addAction(cancelButton)
         alert.addAction(takePhotoButton)
@@ -46,21 +62,18 @@ open class PhotoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationC
         }
     }
     
-    fileprivate func photoFromLibrary()
+    fileprivate func photoFromLibrary(_ alert:UIAlertController)
     {
-        imagePickerController = UIImagePickerController()
-        imagePickerController?.sourceType = .photoLibrary;
-        imagePickerController?.delegate = self;
-        viewController?.present(imagePickerController!, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.viewController?.present(self.imagePickerController, animated: true, completion: nil)
+        }
     }
     
-    fileprivate func photoFromCamera()
+    fileprivate func photoFromCamera(_ alert:UIAlertController)
     {
-        imagePickerController = UIImagePickerController()
-        imagePickerController?.delegate = self;
-        imagePickerController?.allowsEditing = true
-        imagePickerController?.sourceType = .camera;
-        viewController?.present(imagePickerController!, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.viewController?.present(self.cameraController, animated: true, completion: nil)
+        }
     }
     
     open func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?)
@@ -69,6 +82,5 @@ open class PhotoPicker: NSObject, UIImagePickerControllerDelegate, UINavigationC
         let chosenImage = image
         photoHandler?(chosenImage)
         picker.dismiss(animated: true, completion: nil)
-        imagePickerController = nil
     }
 }
